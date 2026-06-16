@@ -24,6 +24,25 @@
 
       </a>
     </nav>
+
+    <section class="consultant-online-card" aria-label="وضعیت آنلاین مشاور">
+      <div class="status-heading">
+        <i class="fa-solid fa-headset"></i>
+        <div>
+          <strong>وضعیت مشاور</strong>
+          <span [class.ok]="isOnline">{{ isOnline ? 'آنلاین' : 'آفلاین' }}</span>
+        </div>
+      </div>
+
+      <div class="status-actions">
+        <button type="button" [disabled]="consultantStatusLoading" (click)="setOnlineOffline(true)">
+          آنلاین شدن
+        </button>
+        <button type="button" class="offline" [disabled]="consultantStatusLoading" (click)="setOnlineOffline(false)">
+          آفلاین شدن
+        </button>
+      </div>
+    </section>
   </aside>
 
   <div

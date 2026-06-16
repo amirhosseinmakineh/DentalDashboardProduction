@@ -2,7 +2,6 @@ import { TableActionType } from './../../../../framwork/models/iTableAction';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 import {
   ConsultantLeadDto,
@@ -36,7 +35,6 @@ type LeadRow = ConsultantLeadDto & {
 })
 export class ConsultantLeadManagmentComponent implements OnInit {
 
-  private readonly route = inject(ActivatedRoute);
   private readonly consultantService = inject(ConsultantService);
   private readonly toastr = inject(ToastrService);
 
@@ -52,7 +50,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   pageSize = 10;
   search = '';
 
-  profileId = 0;
+  profileId = 26;
 
   isDialogOpen = false;
   dialogTitle = 'ثبت گزارش تماس';
@@ -204,24 +202,12 @@ customActions: ITableAction[] = [
   // ======================
   private resolveProfileId(): void {
 
-    const id = Number(this.route.snapshot.paramMap.get('profileId'));
-    this.profileId = id || this.getProfileIdFromStorage();
+    // TODO: remove this temporary hardcode after consultant identity is provided by auth.
+    this.profileId = 26;
 
     if (!this.profileId) {
       this.toastr.error('شناسه مشاور یافت نشد');
     }
-  }
-
-  private getProfileIdFromStorage(): number {
-
-    const keys = ['consultantProfileId', 'profileId'];
-
-    for (const k of keys) {
-      const v = Number(localStorage.getItem(k));
-      if (v) return v;
-    }
-
-    return 0;
   }
 
   private canSubmitReport(lead: ConsultantLeadDto): boolean {

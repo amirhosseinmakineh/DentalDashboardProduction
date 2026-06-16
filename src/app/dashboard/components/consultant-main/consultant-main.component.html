@@ -1,0 +1,14 @@
+<section class="status-card" dir="rtl">
+  <h1>وضعیت مشاور</h1>
+  <div class="grid">
+    <div><span>وضعیت حضور</span><strong [class.ok]="isAvailable">{{ isAvailable ? 'حاضر' : 'غایب' }}</strong></div>
+    <div><span>وضعیت آنلاین</span><strong [class.ok]="isOnline">{{ isOnline ? 'آنلاین' : 'آفلاین' }}</strong></div>
+  </div>
+  <div class="actions">
+    <button type="button" [disabled]="loading || !profileId" (click)="setAvailable(true)">ثبت حضور</button>
+    <button type="button" [disabled]="loading || !profileId" (click)="setAvailable(false)">عدم حضور</button>
+    <button type="button" [disabled]="loading || !profileId" (click)="setOnlineOffline(true)">آنلاین شدن</button>
+    <button type="button" [disabled]="loading || !profileId" (click)="setOnlineOffline(false)">آفلاین شدن</button>
+    <button type="button" class="secondary" (click)="goToMyLeads()">مشاهده لیدهای من</button>
+  </div>
+</section>

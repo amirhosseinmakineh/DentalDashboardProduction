@@ -2,9 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
+import { TableComponent } from '../../../shared/components/table/table.component';
 import { ConsultantLeadDto, SubmitLeadCallReportCommand } from '../../../core/models/consultant-lead.models';
 import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
+import { ToastrService } from '../../../core/services/toastr.service';
 
 type LeadRow = ConsultantLeadDto & {
   assignmentTypeTitle: string;
@@ -16,15 +19,16 @@ type LeadRow = ConsultantLeadDto & {
 @Component({
   selector: 'app-consultant-lead-managment',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TableComponent, BaseDialogComponent],
   templateUrl: './consultant-lead-managment.component.html',
   styleUrl: './consultant-lead-managment.component.css'
 })
 export class ConsultantLeadManagmentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly consultantService = inject(ConsultantService);
+  private readonly toastr = inject(ToastrService);
 
-  leads: ConsultantLeadDto[] = [];
+  leads: LeadRow[] = [];
   loading = false;
   dialogLoading = false;
   totalCount = 0;
@@ -33,14 +37,27 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   profileId = 0;
   isDialogOpen = false;
   dialogTitle = 'ثبت گزارش تماس';
-  dialogMode = 'create';
-  selectedLead: ConsultantLeadDto | null = null;
+  dialogMode: 'create' = 'create';
+  selectedLead: LeadRow | null = null;
   reportForm: SubmitLeadCallReportCommand = {
     leadAssignmentId: 0,
     consultantProfileId: 0,
     callResult: 1,
     reportDescription: ''
   };
+
+  columns = [
+    { key: 'userName', title: 'نام مشتری' },
+    { key: 'phoneNumber', title: 'شماره موبایل' },
+    { key: 'assignmentTypeTitle', title: 'نوع لید' },
+    { key: 'leadStateTitle', title: 'وضعیت' },
+    { key: 'assignedAtTitle', title: 'زمان تخصیص' },
+    { key: 'callDeadlineAtTitle', title: 'مهلت تماس' }
+  ];
+
+  customActions = [
+    { key: 'submitReport', title: 'ثبت گزارش تماس', icon: 'fa-solid fa-clipboard-check', className: 'report-btn' }
+  ];
 
   callResultOptions = [
     { value: 1, title: 'تماس گرفته شد' },
@@ -50,16 +67,6 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     { value: 5, title: 'شماره اشتباه' },
     { value: 6, title: 'نیاز به پیگیری' }
   ];
-
-  get tableRows(): LeadRow[] {
-    return this.leads.map((lead) => ({
-      ...lead,
-      assignmentTypeTitle: this.getAssignmentTypeTitle(lead.assignmentType),
-      leadStateTitle: this.getLeadStateTitle(lead.leadAssignmentState),
-      assignedAtTitle: this.formatDate(lead.assignedAt),
-      callDeadlineAtTitle: this.formatDate(lead.callDeadlineAt)
-    }));
-  }
 
   ngOnInit(): void {
     this.resolveProfileId();
@@ -85,9 +92,18 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     } as Record<number, string>)[state] ?? '-';
   }
 
-  openReportDialog(lead: ConsultantLeadDto): void {
+  onCustomAction(event: { action?: string; key?: string; row?: LeadRow; item?: LeadRow; data?: LeadRow }): void {
+    const actionKey = event.action ?? event.key;
+    const lead = event.row ?? event.item ?? event.data;
+
+    if (actionKey === 'submitReport' && lead) {
+      this.openReportDialog(lead);
+    }
+  }
+
+  openReportDialog(lead: LeadRow): void {
     if (!this.canSubmitReport(lead)) {
-      this.showWarning('این لید قبلاً تعیین تکلیف شده است');
+      this.toastr.warning('این لید قبلاً تعیین تکلیف شده است');
       return;
     }
 
@@ -103,18 +119,18 @@ export class ConsultantLeadManagmentComponent implements OnInit {
 
   submitReport(): void {
     if (!this.reportForm.callResult || !this.reportForm.reportDescription.trim()) {
-      this.showWarning('نتیجه تماس و توضیحات گزارش الزامی است');
+      this.toastr.warning('نتیجه تماس و توضیحات گزارش الزامی است');
       return;
     }
 
     this.dialogLoading = true;
     this.consultantService.submitLeadCallReport(this.reportForm).subscribe({
       next: (response) => {
-        this.showSuccess(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد'));
+        this.toastr.success(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد'));
         this.closeDialog();
         this.loadLeads();
       },
-      error: (error) => this.showError(getHttpErrorMessage(error)),
+      error: (error) => this.toastr.error(getHttpErrorMessage(error)),
       complete: () => this.dialogLoading = false
     });
   }
@@ -132,10 +148,10 @@ export class ConsultantLeadManagmentComponent implements OnInit {
       pageSize: this.pageSize
     }).subscribe({
       next: (response) => {
-        this.leads = response.items;
+        this.leads = response.items.map((lead) => this.toLeadRow(lead));
         this.totalCount = response.totalCount;
       },
-      error: (error) => this.showError(getHttpErrorMessage(error)),
+      error: (error) => this.toastr.error(getHttpErrorMessage(error)),
       complete: () => this.loading = false
     });
   }
@@ -145,7 +161,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     this.profileId = routeProfileId || this.getProfileIdFromStorage();
 
     if (!this.profileId) {
-      this.showError('شناسه پروفایل مشاور یافت نشد');
+      this.toastr.error('شناسه پروفایل مشاور یافت نشد');
     }
   }
 
@@ -175,19 +191,17 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     return !lead.reportSubmittedAt && ![5, 6, 7].includes(lead.leadAssignmentState);
   }
 
+  private toLeadRow(lead: ConsultantLeadDto): LeadRow {
+    return {
+      ...lead,
+      assignmentTypeTitle: this.getAssignmentTypeTitle(lead.assignmentType),
+      leadStateTitle: this.getLeadStateTitle(lead.leadAssignmentState),
+      assignedAtTitle: this.formatDate(lead.assignedAt),
+      callDeadlineAtTitle: this.formatDate(lead.callDeadlineAt)
+    };
+  }
+
   private formatDate(value?: string): string {
     return value ? new Date(value).toLocaleString('fa-IR') : '-';
   }
-  private showSuccess(message: string): void {
-    console.log(message);
-  }
-
-  private showError(message: string): void {
-    console.error(message);
-  }
-
-  private showWarning(message: string): void {
-    console.warn(message);
-  }
-
 }

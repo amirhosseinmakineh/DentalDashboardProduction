@@ -23,16 +23,21 @@ export class DashboardLayoutComponent {
   isSidebarOpen = signal(true);
 
   sidebarItems: SidebarItem[] = [
-{
-  title: 'مدیریت کاربران',
-  icon: 'fa-solid fa-users',
-  route: '/dashboard/userManagement'
-},
-{
-  title: 'مدیریت مشاوران',
-  icon: 'fa-solid fa-user-tie',
-  route: '/dashboard/consultant'
-}
+    {
+      title: 'مدیریت کاربران',
+      icon: 'fa-solid fa-users',
+      route: '/dashboard/userManagement'
+    },
+    {
+      title: 'مدیریت مشاوران',
+      icon: 'fa-solid fa-user-tie',
+      route: '/dashboard/consultant'
+    },
+    {
+      title: 'مدیریت لیدها',
+      icon: 'fa-solid fa-address-book',
+      route: '/dashboard/my-leads'
+    }
   ];
 
   toggleSidebar(): void {

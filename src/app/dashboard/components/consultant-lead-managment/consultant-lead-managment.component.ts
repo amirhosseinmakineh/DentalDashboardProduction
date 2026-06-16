@@ -3,7 +3,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConsultantLeadDto, SubmitLeadCallReportCommand } from '../../../core/models/consultant-lead.models';
-import { ToastrService } from '../../../core/services/toastr.service';
 import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
 
@@ -24,7 +23,6 @@ type LeadRow = ConsultantLeadDto & {
 export class ConsultantLeadManagmentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly consultantService = inject(ConsultantService);
-  private readonly toastr = inject(ToastrService);
 
   leads: ConsultantLeadDto[] = [];
   loading = false;
@@ -89,7 +87,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
 
   openReportDialog(lead: ConsultantLeadDto): void {
     if (!this.canSubmitReport(lead)) {
-      this.toastr.warning('این لید قبلاً تعیین تکلیف شده است');
+      this.showWarning('این لید قبلاً تعیین تکلیف شده است');
       return;
     }
 
@@ -105,18 +103,18 @@ export class ConsultantLeadManagmentComponent implements OnInit {
 
   submitReport(): void {
     if (!this.reportForm.callResult || !this.reportForm.reportDescription.trim()) {
-      this.toastr.warning('نتیجه تماس و توضیحات گزارش الزامی است');
+      this.showWarning('نتیجه تماس و توضیحات گزارش الزامی است');
       return;
     }
 
     this.dialogLoading = true;
     this.consultantService.submitLeadCallReport(this.reportForm).subscribe({
       next: (response) => {
-        this.toastr.success(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد'));
+        this.showSuccess(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد'));
         this.closeDialog();
         this.loadLeads();
       },
-      error: (error) => this.toastr.error(getHttpErrorMessage(error)),
+      error: (error) => this.showError(getHttpErrorMessage(error)),
       complete: () => this.dialogLoading = false
     });
   }
@@ -137,7 +135,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
         this.leads = response.items;
         this.totalCount = response.totalCount;
       },
-      error: (error) => this.toastr.error(getHttpErrorMessage(error)),
+      error: (error) => this.showError(getHttpErrorMessage(error)),
       complete: () => this.loading = false
     });
   }
@@ -147,7 +145,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     this.profileId = routeProfileId || this.getProfileIdFromStorage();
 
     if (!this.profileId) {
-      this.toastr.error('شناسه پروفایل مشاور یافت نشد');
+      this.showError('شناسه پروفایل مشاور یافت نشد');
     }
   }
 
@@ -180,4 +178,16 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   private formatDate(value?: string): string {
     return value ? new Date(value).toLocaleString('fa-IR') : '-';
   }
+  private showSuccess(message: string): void {
+    console.log(message);
+  }
+
+  private showError(message: string): void {
+    console.error(message);
+  }
+
+  private showWarning(message: string): void {
+    console.warn(message);
+  }
+
 }

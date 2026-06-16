@@ -14,7 +14,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ConsultantService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/Consultant';
+  private readonly baseUrl = 'http://localhost:5182/api/Consultant';
 
   getLeads(query: GetLeadsQuery): Observable<PaginatedResult<ConsultantLeadDto>> {
     let params = new HttpParams()

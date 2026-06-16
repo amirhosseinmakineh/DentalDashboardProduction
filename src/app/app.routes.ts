@@ -5,12 +5,14 @@ import { ConsultantMainComponent } from './dashboard/components/consultant-main/
 import { ConsultantLeadManagmentComponent } from './dashboard/components/consultant-lead-managment/consultant-lead-managment.component';
 import { ConsultantAttendanceManagmentComponent } from './components/dashboards/consultantAttendanceManagment/consultantAttendanceManagment.component';
 import { ConsultantScoreLogManagmentComponent } from './components/dashboards/consultantScoreLogManagment/consultantScoreLogManagment.component';
+import { LandingComponent } from './components/Landing/Landing.component';
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'dashboard/consultant/main' },
+  { path: '', pathMatch: 'full', component: LandingComponent },
   {
     path: 'dashboard',
     component: DashboardLayoutComponent,
     children: [
+      { path: '', pathMatch: 'full', redirectTo: 'consultant/main' },
       { path: 'userManagement', loadComponent: () => import('./components/dashboards/userManagement/userManagement.component').then((m) => m.UserManagementComponent) },
       { path: 'consultant', component: ConsultantComponent },
       { path: 'consultant/main', component: ConsultantMainComponent },

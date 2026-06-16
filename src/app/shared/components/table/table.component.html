@@ -1,0 +1,14 @@
+<div class="table-wrapper" dir="rtl">
+  @if (loading) { <div class="loading">در حال بارگذاری...</div> }
+  <table>
+    <thead><tr>@for (column of columns; track column.key) { <th>{{ column.title }}</th> } @if (actions.length) { <th>عملیات</th> }</tr></thead>
+    <tbody>
+      @for (row of data; track $index) {
+        <tr>
+          @for (column of columns; track column.key) { <td>{{ row[column.key] }}</td> }
+          @if (actions.length) { <td class="actions">@for (action of actions; track action.key) { <button type="button" (click)="actionClick.emit({ action: action.key, row })">{{ action.title }}</button> }</td> }
+        </tr>
+      } @empty { <tr><td [attr.colspan]="columns.length + (actions.length ? 1 : 0)">داده‌ای یافت نشد</td></tr> }
+    </tbody>
+  </table>
+</div>

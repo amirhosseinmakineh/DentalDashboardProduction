@@ -1,0 +1,10 @@
+<section class="page" dir="rtl">
+  <header><h1>مدیریت لیدها</h1><span>تعداد کل: {{ totalCount }}</span></header>
+  <app-table [columns]="columns" [data]="tableRows" [loading]="loading" [actions]="actions" (actionClick)="onTableAction($event)"></app-table>
+</section>
+<app-base-dialog [isOpen]="isDialogOpen" [title]="dialogTitle" [loading]="dialogLoading" (confirm)="submitReport()" (close)="closeDialog()">
+  <div class="form" dir="rtl">
+    <label>نتیجه تماس<select [(ngModel)]="reportForm.callResult">@for (option of callResultOptions; track option.value) { <option [ngValue]="option.value">{{ option.title }}</option> }</select></label>
+    <label>توضیحات گزارش<textarea rows="5" [(ngModel)]="reportForm.reportDescription" placeholder="توضیحات گزارش تماس را وارد کنید"></textarea></label>
+  </div>
+</app-base-dialog>

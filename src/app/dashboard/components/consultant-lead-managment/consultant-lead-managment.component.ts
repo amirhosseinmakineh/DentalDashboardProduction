@@ -7,7 +7,7 @@ import { TableComponent } from '../../../shared/components/table/table.component
 import { ConsultantLeadDto, SubmitLeadCallReportCommand } from '../../../core/models/consultant-lead.models';
 import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
-import { ToastrService } from '../../../core/services/toastr.service';
+import { ToastrService } from 'ngx-toastr';
 
 type LeadRow = ConsultantLeadDto & {
   assignmentTypeTitle: string;
@@ -34,6 +34,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   totalCount = 0;
   pageNumber = 1;
   pageSize = 10;
+  search = '';
   profileId = 0;
   isDialogOpen = false;
   dialogTitle = 'ثبت گزارش تماس';
@@ -92,12 +93,20 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     } as Record<number, string>)[state] ?? '-';
   }
 
-  onCustomAction(event: { action?: string; key?: string; row?: LeadRow; item?: LeadRow; data?: LeadRow }): void {
-    const actionKey = event.action ?? event.key;
-    const lead = event.row ?? event.item ?? event.data;
+  onSearch(value: string): void {
+    this.search = value;
+    this.pageNumber = 1;
+    this.loadLeads();
+  }
 
-    if (actionKey === 'submitReport' && lead) {
-      this.openReportDialog(lead);
+  onPageChange(page: number): void {
+    this.pageNumber = page;
+    this.loadLeads();
+  }
+
+  onCustomAction(event: { action: { key: string }; row: LeadRow }): void {
+    if (event.action.key === 'submitReport') {
+      this.openReportDialog(event.row);
     }
   }
 
@@ -145,7 +154,8 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     this.consultantService.getLeads({
       profileId: this.profileId,
       pageNumber: this.pageNumber,
-      pageSize: this.pageSize
+      pageSize: this.pageSize,
+      search: this.search
     }).subscribe({
       next: (response) => {
         this.leads = response.items.map((lead) => this.toLeadRow(lead));

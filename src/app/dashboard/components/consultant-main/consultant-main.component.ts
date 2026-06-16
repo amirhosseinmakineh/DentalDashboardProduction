@@ -3,7 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
-import { ToastrService } from '../../../core/services/toastr.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-consultant-main',

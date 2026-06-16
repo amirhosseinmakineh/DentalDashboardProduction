@@ -1,52 +1,24 @@
 import { Routes } from '@angular/router';
-
-import { LandingComponent } from './components/Landing/Landing.component';
-import { DashboardLayoutComponent } from './components/dashboard-layout.component/dashboard-layout.component.component';
-
-import { UserManagementComponent } from './components/dashboards/userManagement/userManagement.component';
-import { ConsultantComponent } from './components/dashboards/consultant/consultant.component';
-import { ConsultantLeadManagmentComponent } from './components/dashboards/consultantLeadManagment/consultantLeadManagment.component';
-import { ConsultantScoreLogManagmentComponent } from './components/dashboards/consultantScoreLogManagment/consultantScoreLogManagment.component';
-import { ConsultantAttendanceManagmentComponent } from './components/dashboards/consultantAttendanceManagment/consultantAttendanceManagment.component';
+import { DashboardLayoutComponent } from './dashboard/components/layout/dashboard-layout.component';
+import { ConsultantComponent } from './dashboard/components/consultant/consultant.component';
+import { ConsultantAttendanceManagmentComponent } from './dashboard/components/consultant-attendance-managment/consultant-attendance-managment.component';
+import { ConsultantLeadManagmentComponent } from './dashboard/components/consultant-lead-managment/consultant-lead-managment.component';
+import { ConsultantMainComponent } from './dashboard/components/consultant-main/consultant-main.component';
+import { ConsultantScoreLogManagmentComponent } from './dashboard/components/consultant-score-log-managment/consultant-score-log-managment.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: LandingComponent
-  },
+  { path: '', pathMatch: 'full', redirectTo: 'dashboard/consultant/main' },
   {
     path: 'dashboard',
     component: DashboardLayoutComponent,
     children: [
-      {
-        path: '',
-        redirectTo: 'userManagement',
-        pathMatch: 'full'
-      },
-      {
-        path: 'userManagement',
-        component: UserManagementComponent
-      },
-      {
-        path: 'consultant',
-        component: ConsultantComponent
-      },
-      {
-        path: 'consultant/:profileId/leads',
-        component: ConsultantLeadManagmentComponent
-      },
-      {
-        path: 'consultant/:profileId/attendances',
-        component: ConsultantAttendanceManagmentComponent
-      },
-      {
-        path: 'consultant/:profileId/scores',
-        component: ConsultantScoreLogManagmentComponent
-      }
+      { path: 'userManagement', loadComponent: () => import('./dashboard/components/user-management/user-management.component').then((m) => m.UserManagementComponent) },
+      { path: 'consultant', component: ConsultantComponent },
+      { path: 'consultant/main', component: ConsultantMainComponent },
+      { path: 'consultant/:profileId/leads', component: ConsultantLeadManagmentComponent },
+      { path: 'consultant/:profileId/attendances', component: ConsultantAttendanceManagmentComponent },
+      { path: 'consultant/:profileId/scores', component: ConsultantScoreLogManagmentComponent },
+      { path: 'my-leads', component: ConsultantLeadManagmentComponent }
     ]
-  },
-  {
-    path: '**',
-    redirectTo: ''
   }
 ];

@@ -1,0 +1,52 @@
+<section class="page" dir="rtl">
+  <header>
+    <div>
+      <h1>مدیریت لیدها</h1>
+      <p>مدیریت لیدهای مشاور</p>
+    </div>
+    <span>تعداد کل: {{ totalCount }}</span>
+  </header>
+
+  <app-table
+    title="لیست لیدها"
+    description="مدیریت لیدهای مشاور"
+    [data]="leads"
+    [columns]="columns"
+    [loading]="loading"
+    [totalCount]="totalCount"
+    [pageNumber]="pageNumber"
+    [pageSize]="pageSize"
+    [showCreate]="false"
+    [showEdit]="false"
+    [showDelete]="false"
+    [customActions]="customActions"
+    (search)="onSearch($event)"
+    (pageChange)="onPageChange($event)"
+    (customAction)="onCustomAction($event)"
+  ></app-table>
+</section>
+
+<app-base-dialog
+  [isOpen]="isDialogOpen"
+  [title]="dialogTitle"
+  [mode]="dialogMode"
+  [loading]="dialogLoading"
+  (confirm)="submitReport()"
+  (closeDialog)="closeDialog()"
+>
+  <div class="form" dir="rtl">
+    <label>
+      نتیجه تماس
+      <select [(ngModel)]="reportForm.callResult">
+        @for (option of callResultOptions; track option.value) {
+          <option [ngValue]="option.value">{{ option.title }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      توضیحات گزارش
+      <textarea rows="5" [(ngModel)]="reportForm.reportDescription" placeholder="توضیحات گزارش تماس را وارد کنید"></textarea>
+    </label>
+  </div>
+</app-base-dialog>

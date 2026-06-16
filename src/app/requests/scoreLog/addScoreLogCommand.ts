@@ -1,5 +1,5 @@
-import { ScoreReason } from "../../enums/ScoreReason";
-import { ScoreSource } from "../../enums/ScoreSource";
+import { ScoreReason } from "../../enums/scoreReason";
+import { ScoreSource } from "../../enums/scoreSource";
 
 export interface AddScoreLogCommand
 {

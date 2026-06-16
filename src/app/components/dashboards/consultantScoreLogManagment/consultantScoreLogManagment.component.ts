@@ -6,9 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 
 import { BaseDialogComponent } from '../../../../framwork/components/base-dialog.component.ts/base-dialog.component.ts.component';
 import { ScoreLogService } from '../../../services/scoreLog/scoreLog.service';
-import { ScoreReason } from '../../../enums/ScoreReason';
-import { AddScoreLogCommand } from '../../../requests/scoreLog/AddScoreLogCommand';
-import { ScoreSource } from '../../../enums/ScoreSource';
+import { ScoreReason } from '../../../enums/scoreReason';
+import { AddScoreLogCommand } from '../../../requests/scoreLog/addScoreLogCommand';
+import { ScoreSource } from '../../../enums/scoreSource';
 
 type DialogMode = 'create';
 

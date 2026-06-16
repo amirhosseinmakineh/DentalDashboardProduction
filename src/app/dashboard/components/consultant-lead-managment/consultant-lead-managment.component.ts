@@ -8,6 +8,7 @@ import { ConsultantLeadDto, SubmitLeadCallReportCommand } from '../../../core/mo
 import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
 import { ToastrService } from 'ngx-toastr';
+import { ITableAction } from '../../../../../framwork/models/iTableAction';
 
 type LeadRow = ConsultantLeadDto & {
   assignmentTypeTitle: string;
@@ -56,8 +57,8 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     { key: 'callDeadlineAtTitle', title: 'مهلت تماس' }
   ];
 
-  customActions = [
-    { key: 'submitReport', title: 'ثبت گزارش تماس', icon: 'fa-solid fa-clipboard-check', className: 'report-btn' }
+  customActions: ITableAction[] = [
+    { key: 'submitReport', title: 'ثبت گزارش تماس', icon: 'fa-solid fa-clipboard-check', type: 'custom', className: 'report-btn' }
   ];
 
   callResultOptions = [
@@ -104,7 +105,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     this.loadLeads();
   }
 
-  onCustomAction(event: { action: { key: string }; row: LeadRow }): void {
+  onCustomAction(event: { action: ITableAction; row: LeadRow }): void {
     if (event.action.key === 'submitReport') {
       this.openReportDialog(event.row);
     }

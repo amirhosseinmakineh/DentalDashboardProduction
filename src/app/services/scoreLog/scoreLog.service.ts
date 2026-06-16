@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddScoreLogCommand } from '../../requests/scoreLog/AddScoreLogCommand';
+import { AddScoreLogCommand } from '../../requests/scoreLog/addScoreLogCommand';
 
 @Injectable({
   providedIn: 'root'

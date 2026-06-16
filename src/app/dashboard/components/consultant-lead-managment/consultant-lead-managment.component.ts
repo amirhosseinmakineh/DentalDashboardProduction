@@ -5,8 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { TableAction, TableColumn, TableComponent } from '../../../shared/components/table/table.component';
 import { ConsultantLeadDto, SubmitLeadCallReportCommand } from '../../../core/models/consultant-lead.models';
-import { ConsultantLeadService } from '../../../core/services/consultant-lead.service';
 import { ToastrService } from '../../../core/services/toastr.service';
+import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
 
 type LeadRow = ConsultantLeadDto & { assignmentTypeTitle: string; leadStateTitle: string; assignedAtTitle: string; callDeadlineAtTitle: string; };
@@ -20,7 +20,7 @@ type LeadRow = ConsultantLeadDto & { assignmentTypeTitle: string; leadStateTitle
 })
 export class ConsultantLeadManagmentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly leadService = inject(ConsultantLeadService);
+  private readonly consultantService = inject(ConsultantService);
   private readonly toastr = inject(ToastrService);
 
   leads: ConsultantLeadDto[] = [];
@@ -41,7 +41,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
     { key: 'assignmentTypeTitle', title: 'نوع لید' }, { key: 'leadStateTitle', title: 'وضعیت' },
     { key: 'assignedAtTitle', title: 'زمان تخصیص' }, { key: 'callDeadlineAtTitle', title: 'مهلت تماس' }
   ];
-  actions: TableAction[] = [{ key: 'submitReport', title: 'ثبت گزارش' }];
+  customActions: TableAction[] = [{ key: 'submitReport', title: 'ثبت گزارش', icon: '📝', className: 'report-btn' }];
   callResultOptions = [
     { value: 1, title: 'تماس گرفته شد' }, { value: 2, title: 'تبدیل شد' }, { value: 3, title: 'رد شد' },
     { value: 4, title: 'پاسخ نداد' }, { value: 5, title: 'شماره اشتباه' }, { value: 6, title: 'نیاز به پیگیری' }
@@ -68,7 +68,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   submitReport(): void {
     if (!this.reportForm.callResult || !this.reportForm.reportDescription.trim()) { this.toastr.warning('نتیجه تماس و توضیحات گزارش الزامی است'); return; }
     this.dialogLoading = true;
-    this.leadService.submitLeadCallReport(this.reportForm).subscribe({
+    this.consultantService.submitLeadCallReport(this.reportForm).subscribe({
       next: (response) => { this.toastr.success(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد')); this.closeDialog(); this.loadLeads(); },
       error: (error) => this.toastr.error(getHttpErrorMessage(error)),
       complete: () => this.dialogLoading = false
@@ -79,7 +79,7 @@ export class ConsultantLeadManagmentComponent implements OnInit {
 
   private loadLeads(): void {
     this.loading = true;
-    this.leadService.getLeads({ profileId: this.profileId, pageNumber: this.pageNumber, pageSize: this.pageSize }).subscribe({
+    this.consultantService.getLeads({ profileId: this.profileId, pageNumber: this.pageNumber, pageSize: this.pageSize }).subscribe({
       next: (response) => { this.leads = response.items; this.totalCount = response.totalCount; },
       error: (error) => this.toastr.error(getHttpErrorMessage(error)),
       complete: () => this.loading = false

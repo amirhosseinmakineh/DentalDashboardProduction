@@ -1,6 +1,6 @@
 <section class="page" dir="rtl">
   <header><h1>مدیریت لیدها</h1><span>تعداد کل: {{ totalCount }}</span></header>
-  <app-table [columns]="columns" [data]="tableRows" [loading]="loading" [actions]="actions" (actionClick)="onTableAction($event)"></app-table>
+  <app-table title="لیست لیدها" description="مدیریت لیدهای مشاور" [columns]="columns" [data]="tableRows" [loading]="loading" [customActions]="customActions" (customAction)="onTableAction($event)"></app-table>
 </section>
 <app-base-dialog [isOpen]="isDialogOpen" [title]="dialogTitle" [loading]="dialogLoading" (confirm)="submitReport()" (close)="closeDialog()">
   <div class="form" dir="rtl">

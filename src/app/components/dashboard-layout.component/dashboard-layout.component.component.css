@@ -61,7 +61,8 @@
 }
 
 .sidebar.closed .brand-text,
-.sidebar.closed .sidebar-link span {
+.sidebar.closed .sidebar-link span,
+.sidebar.closed .consultant-online-card {
   display: none;
 }
 
@@ -99,6 +100,80 @@
 
 .sidebar-link.active {
   box-shadow: inset 0 0 0 1px #ead1ad;
+}
+
+
+.consultant-online-card {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #ead1ad;
+  border-radius: 22px;
+  background: #fff8ec;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.status-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #3f352a;
+}
+
+.status-heading i {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  background: #fff3df;
+  color: #9b713d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-heading div {
+  display: grid;
+  gap: 4px;
+}
+
+.status-heading strong {
+  font-size: 14px;
+}
+
+.status-heading span {
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-heading span.ok {
+  color: #16a34a;
+}
+
+.status-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.status-actions button {
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  color: white;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 10px 12px;
+}
+
+.status-actions button.offline {
+  background: linear-gradient(135deg, #f97316, #c2410c);
+}
+
+.status-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .main-area {

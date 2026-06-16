@@ -1,0 +1,24 @@
+<div class="consultant-page" dir="rtl">
+
+  <div class="page-title">
+    <h1>مدیریت مشاوران</h1>
+  </div>
+<app-table
+  [title]="'لیست مشاوران'"
+  [description]="'مدیریت مشاوران سیستم'"
+  [data]="consultants"
+  [columns]="columns"
+  [loading]="loading"
+  [totalCount]="totalCount"
+  [pageNumber]="pageNumber"
+  [pageSize]="pageSize"
+  [showCreate]="false"
+  [showEdit]="false"
+  [showDelete]="false"
+  [customActions]="customActions"
+  (search)="onSearch($event)"
+  (pageChange)="onPageChange($event)"
+  (customAction)="onCustomAction($event)">
+</app-table>
+
+</div>

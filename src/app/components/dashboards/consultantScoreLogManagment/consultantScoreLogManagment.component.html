@@ -1,0 +1,56 @@
+<div class="score-dialog-page" dir="rtl">
+
+  <app-base-dialog
+    [isOpen]="isDialogOpen"
+    [title]="dialogTitle"
+    [mode]="dialogMode"
+    [loading]="dialogLoading"
+    (closeDialog)="closeDialog()"
+    (confirm)="confirmDialog()">
+
+    <div class="score-dialog-form">
+
+      <div class="form-group">
+        <label>نوع امتیاز</label>
+
+        <select
+          name="scoreReason"
+          [(ngModel)]="form.reason">
+
+          <option
+            *ngFor="let reason of scoreReasons"
+            [ngValue]="reason.value">
+            {{ reason.title }}
+          </option>
+
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>عدد امتیاز</label>
+
+        <input
+          type="number"
+          name="scoreValue"
+          min="0"
+          max="100"
+          [(ngModel)]="form.scoreValue"
+          placeholder="عدد بین ۰ تا ۱۰۰">
+      </div>
+
+      <div class="form-group full-width">
+        <label>توضیحات مدیر</label>
+
+        <textarea
+          name="description"
+          rows="4"
+          [(ngModel)]="form.description"
+          placeholder="توضیحات امتیاز را وارد کنید">
+        </textarea>
+      </div>
+
+    </div>
+
+  </app-base-dialog>
+
+</div>

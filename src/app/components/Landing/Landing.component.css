@@ -1,0 +1,158 @@
+body {
+  margin: 0;
+  font-family: "Vazirmatn", sans-serif;
+  background: #fbf7ef;
+  color: #2f2a25;
+}
+
+.landing {
+  min-height: 100vh;
+  padding: 28px 7%;
+  background:
+    radial-gradient(circle at top left, #fff7df, transparent 35%),
+    linear-gradient(135deg, #fffaf2, #f5ead8);
+}
+
+/* Navbar */
+.navbar {
+  height: 72px;
+  padding: 0 26px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 18px 45px rgba(116, 87, 50, 0.12);
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: #8a6238;
+}
+
+.navbar nav {
+  display: flex;
+  gap: 28px;
+}
+
+.navbar a {
+  font-size: 14px;
+  color: #67594b;
+  cursor: pointer;
+}
+
+.nav-buttons button {
+  margin-left: 12px;
+  border: none;
+  background: linear-gradient(135deg, #c99b5f, #8f642f);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 60px;
+  padding-top: 90px;
+}
+
+.badge {
+  display: inline-block;
+  background: #fff;
+  color: #9b713d;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-size: 54px;
+  line-height: 1.35;
+  margin: 0;
+  color: #2f2922;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 2;
+  color: #6d6257;
+  max-width: 620px;
+  margin: 24px 0 36px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.secondary {
+  border: 1px solid #d9c2a5;
+  background: #fffaf2;
+  color: #8a6238;
+  padding: 13px 24px;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(210, 184, 145, 0.45);
+  border-radius: 34px;
+  padding: 36px;
+  box-shadow: 0 30px 80px rgba(122, 90, 50, 0.16);
+}
+
+.tooth-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  background: #fff4df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  margin-bottom: 22px;
+}
+
+.hero-card input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  padding: 15px 16px;
+  border-radius: 15px;
+  border: 1px solid #ead8bf;
+  background: #fffdf9;
+  outline: none;
+}
+
+.hero-card button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ریسپانسیو موبایل */
+@media (max-width: 900px) {
+  .navbar nav {
+    display: none;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 55px;
+  }
+  .hero h1 {
+    font-size: 36px;
+  }
+  .nav-buttons button {
+    margin-left: 6px;
+    padding: 10px 16px;
+  }
+}

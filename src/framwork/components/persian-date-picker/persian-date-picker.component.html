@@ -1,0 +1,30 @@
+<div class="date-picker" dir="rtl">
+  <label>تاریخ تولد</label>
+
+  <button type="button" class="date-input" (click)="toggleCalendar()">
+    <span>{{ selectedDate || 'انتخاب تاریخ تولد' }}</span>
+    <i class="fa-solid fa-calendar-days"></i>
+  </button>
+
+  <div class="calendar" *ngIf="isOpen">
+    <div class="calendar-header">
+      <button type="button" (click)="previousMonth()">‹</button>
+      <strong>{{ monthName }}</strong>
+      <button type="button" (click)="nextMonth()">›</button>
+    </div>
+
+    <div class="week-days">
+      <span *ngFor="let day of weekDays">{{ day }}</span>
+    </div>
+
+    <div class="days-grid">
+      <button
+        type="button"
+        *ngFor="let day of days"
+        [class.empty]="day === null"
+        (click)="selectDay(day)">
+        {{ day || '' }}
+      </button>
+    </div>
+  </div>
+</div>

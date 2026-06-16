@@ -1,0 +1,61 @@
+<section class="dashboard-layout" dir="rtl">
+
+  <aside class="sidebar" [class.closed]="!isSidebarOpen()">
+    <div class="sidebar-header">
+      <div class="brand-icon">
+        <i class="fa-solid fa-tooth"></i>
+      </div>
+
+      <div class="brand-text">
+        <strong>Dental Dashboard</strong>
+        <span>کلینیک دکتر مقدم</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a
+        *ngFor="let item of sidebarItems"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="sidebar-link">
+
+        <i [class]="item.icon"></i>
+        <span>{{ item.title }}</span>
+
+      </a>
+    </nav>
+  </aside>
+
+  <div
+    class="mobile-overlay"
+    *ngIf="isSidebarOpen()"
+    (click)="toggleSidebar()">
+  </div>
+
+  <main class="main-area" [class.expanded]="!isSidebarOpen()">
+
+    <header class="dashboard-header">
+      <button type="button" class="menu-btn" (click)="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <div class="header-title">
+        <h1>داشبورد مدیریت</h1>
+        <p>مدیریت کاربران، نقش‌ها و مشاوران سیستم</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="profile-btn">
+          <i class="fa-solid fa-user"></i>
+          <span>مدیر سیستم</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="content-wrapper">
+      <router-outlet></router-outlet>
+    </section>
+
+  </main>
+
+</section>

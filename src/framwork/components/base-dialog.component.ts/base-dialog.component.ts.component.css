@@ -1,0 +1,90 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(45, 36, 25, 0.42);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.dialog-box {
+  width: 100%;
+  max-width: 430px;
+  background: #fffaf1;
+  border: 1px solid #eadcc7;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 30px 90px rgba(72, 50, 25, 0.25);
+}
+
+.dialog-header {
+  height: 62px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dialog-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #3f352a;
+}
+
+.close-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: #f3e6d3;
+  color: #7a5830;
+  font-size: 22px;
+  line-height: 34px;
+  cursor: pointer;
+}
+
+.dialog-body {
+  padding: 8px 20px 22px;
+}
+
+.dialog-footer {
+  padding: 16px 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: #fff6e8;
+}
+
+.btn {
+  height: 46px;
+  border: none;
+  border-radius: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primary {
+  background: linear-gradient(135deg, #c99b5f, #8f642f);
+  color: white;
+}
+
+.secondary {
+  background: #f3e6d3;
+  color: #7a5830;
+}
+
+@media (max-width: 600px) {
+  .dialog-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .dialog-box {
+    max-width: 100%;
+    border-radius: 26px 26px 0 0;
+  }
+}

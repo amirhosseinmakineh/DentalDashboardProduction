@@ -1,0 +1,25 @@
+<div class="attendance-page" dir="rtl">
+
+  <div class="page-title">
+    <h1>مدیریت حضور و غیاب مشاور</h1>
+  </div>
+
+  <app-table
+    [title]="'لیست حضور و غیاب'"
+    [description]="'مدیریت حضور و غیاب مشاور انتخاب‌شده'"
+    [data]="attendances"
+    [columns]="columns"
+    [loading]="loading"
+    [totalCount]="totalCount"
+    [pageNumber]="pageNumber"
+    [pageSize]="pageSize"
+    [showSearch]="false"
+    [showCreate]="false"
+    [showEdit]="false"
+    [showDelete]="false"
+    [customActions]="customActions"
+    (pageChange)="onPageChange($event)"
+    (customAction)="onCustomAction($event)">
+  </app-table>
+
+</div>

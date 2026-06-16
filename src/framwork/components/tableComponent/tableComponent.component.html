@@ -1,0 +1,150 @@
+<div class="table-card" dir="rtl">
+
+  <div class="table-header">
+
+    <div class="table-title-box">
+      <h2>{{ title }}</h2>
+      <p>{{ description }}</p>
+    </div>
+
+    <div class="table-header-actions">
+
+      <div class="search-box" *ngIf="showSearch">
+        <input
+          type="text"
+          placeholder="جستجو..."
+          (input)="onSearch($event)">
+      </div>
+
+      <button
+        *ngIf="showCreate"
+        type="button"
+        class="create-btn"
+        (click)="onCreate()">
+        <span>+</span>
+        افزودن
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="table-wrapper">
+
+    <table class="custom-table">
+
+      <colgroup>
+        <col
+          *ngFor="let column of columns"
+          [style.width]="column.width || null">
+
+        <col
+          *ngIf="hasActions"
+          class="actions-col">
+      </colgroup>
+
+      <thead>
+        <tr>
+
+          <th *ngFor="let column of columns">
+            {{ column.title }}
+          </th>
+
+          <th
+            *ngIf="hasActions"
+            class="actions-header">
+            عملیات
+          </th>
+
+        </tr>
+      </thead>
+
+<tbody>
+
+  <tr *ngIf="loading">
+    <td [attr.colspan]="colspan" class="empty-state">
+      در حال بارگذاری اطلاعات...
+    </td>
+  </tr>
+
+  <tr *ngIf="!loading && safeData.length === 0">
+    <td [attr.colspan]="colspan" class="empty-state">
+      اطلاعاتی یافت نشد
+    </td>
+  </tr>
+
+  <tr *ngFor="let item of safeData">
+
+    <td *ngFor="let column of columns">
+      <span class="cell-text">
+        {{ getValue(item, column.key) }}
+      </span>
+    </td>
+
+    <td *ngIf="hasActions" class="actions-cell">
+
+      <button
+        *ngIf="showEdit"
+        type="button"
+        class="action-btn edit-btn"
+        (click)="onEdit(item)">
+        ویرایش
+      </button>
+
+      <button
+        *ngIf="showDelete"
+        type="button"
+        class="action-btn delete-btn"
+        (click)="onDelete(item)">
+        حذف
+      </button>
+
+      <button
+        *ngFor="let action of customActions"
+        type="button"
+        class="action-btn custom-btn"
+        [ngClass]="action.className"
+        (click)="onCustomAction(action, item)">
+        {{ action.title }}
+      </button>
+
+    </td>
+
+  </tr>
+
+</tbody>
+    </table>
+
+  </div>
+
+  <div class="table-footer">
+
+    <div class="table-info">
+      نمایش {{ startItem }} تا {{ endItem }} از {{ totalCount }} رکورد
+    </div>
+
+    <div class="pagination">
+
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="!hasPrevious || loading">
+        قبلی
+      </button>
+
+      <span>
+        صفحه {{ pageNumber }} از {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="!hasNext || loading">
+        بعدی
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

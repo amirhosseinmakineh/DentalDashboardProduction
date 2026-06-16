@@ -1,0 +1,102 @@
+<section class="landing" dir="rtl">
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">کلینیک زیبایی دکتر سعید مقدم</div>
+    <nav>
+      <a>خدمات</a>
+      <a>نمونه کارها</a>
+      <a>درباره ما</a>
+      <a>تماس</a>
+    </nav>
+    <div class="nav-buttons">
+      <button (click)="openLogin()">ورود</button>
+      <button (click)="openRegister()">عضویت</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="badge">طراحی لبخند، ایمپلنت و دندان‌پزشکی زیبایی</span>
+      <h1>
+        لبخندی زیبا، طبیعی و ماندگار
+        <br />
+        با کلینیک دکتر سعید مقدم
+      </h1>
+      <p>
+        ارائه خدمات تخصصی زیبایی دندان با تجهیزات مدرن، محیطی آرام
+        و برنامه درمانی اختصاصی برای هر مراجعه‌کننده.
+      </p>
+
+      <div class="hero-actions">
+        <button class="primary">دریافت مشاوره رایگان</button>
+        <button class="secondary">مشاهده خدمات</button>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="tooth-icon">🦷</div>
+      <h3>رزرو سریع نوبت</h3>
+      <p>برای مشاوره زیبایی لبخند، شماره خود را ثبت کنید.</p>
+
+      <input placeholder="نام و نام خانوادگی" />
+      <input placeholder="شماره موبایل" />
+      <button>ارسال درخواست</button>
+    </div>
+  </section>
+<app-base-dialog
+  [isOpen]="isLoginOpen"
+  title="ورود"
+  mode="create"
+  (closeDialog)="isLoginOpen = false"
+  (confirm)="login()">
+
+  <input placeholder="شماره موبایل" [(ngModel)]="loginModel.phoneNumber" />
+  <input placeholder="رمز عبور" type="password" [(ngModel)]="loginModel.passwordHash" />
+
+</app-base-dialog>
+<app-base-dialog
+  [isOpen]="isRegisterOpen"
+  title="عضویت"
+  mode="create"
+  (closeDialog)="isRegisterOpen = false"
+  (confirm)="register()">
+
+  <input
+    placeholder="نام"
+    [(ngModel)]="registerModel.firstName" />
+
+  <input
+    placeholder="نام خانوادگی"
+    [(ngModel)]="registerModel.lastName" />
+
+  <select [(ngModel)]="registerModel.Gender">
+    <option [ngValue]="registerModel.Gender">مرد</option>
+    <option [ngValue]="registerModel.Gender">زن</option>
+  </select>
+
+  <app-persian-date-picker
+    (dateChanged)="onBirthDateChanged($event)">
+  </app-persian-date-picker>
+
+  <label class="file-picker">
+    <span>{{ selectedImageName || 'انتخاب تصویر پروفایل' }}</span>
+    <input
+      type="file"
+      accept="image/*"
+      (change)="onAvatarSelected($event)" />
+  </label>
+
+  <input
+    placeholder="شماره موبایل"
+    [(ngModel)]="registerModel.phoneNumber" />
+
+  <input
+    placeholder="رمز عبور"
+    type="password"
+    [(ngModel)]="registerModel.passwordHash" />
+
+</app-base-dialog>
+
+</section>

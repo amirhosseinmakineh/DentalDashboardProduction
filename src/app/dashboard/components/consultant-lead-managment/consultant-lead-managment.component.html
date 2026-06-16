@@ -1,10 +1,57 @@
 <section class="page" dir="rtl">
-  <header><h1>مدیریت لیدها</h1><span>تعداد کل: {{ totalCount }}</span></header>
-  <app-table title="لیست لیدها" description="مدیریت لیدهای مشاور" [columns]="columns" [data]="tableRows" [loading]="loading" [customActions]="customActions" (customAction)="onTableAction($event)"></app-table>
-</section>
-<app-base-dialog [isOpen]="isDialogOpen" [title]="dialogTitle" [loading]="dialogLoading" (confirm)="submitReport()" (close)="closeDialog()">
-  <div class="form" dir="rtl">
-    <label>نتیجه تماس<select [(ngModel)]="reportForm.callResult">@for (option of callResultOptions; track option.value) { <option [ngValue]="option.value">{{ option.title }}</option> }</select></label>
-    <label>توضیحات گزارش<textarea rows="5" [(ngModel)]="reportForm.reportDescription" placeholder="توضیحات گزارش تماس را وارد کنید"></textarea></label>
+  <header>
+    <div>
+      <h1>مدیریت لیدها</h1>
+      <p>مدیریت لیدهای مشاور</p>
+    </div>
+    <span>تعداد کل: {{ totalCount }}</span>
+  </header>
+
+  <div class="table-card">
+    <h2>لیست لیدها</h2>
+    @if (loading) {
+      <div class="loading">در حال بارگذاری...</div>
+    }
+    <table>
+      <thead>
+        <tr>
+          <th>نام مشتری</th>
+          <th>شماره موبایل</th>
+          <th>نوع لید</th>
+          <th>وضعیت</th>
+          <th>زمان تخصیص</th>
+          <th>مهلت تماس</th>
+          <th>عملیات</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (lead of tableRows; track lead.id) {
+          <tr>
+            <td>{{ lead.userName }}</td>
+            <td>{{ lead.phoneNumber }}</td>
+            <td>{{ lead.assignmentTypeTitle }}</td>
+            <td>{{ lead.leadStateTitle }}</td>
+            <td>{{ lead.assignedAtTitle }}</td>
+            <td>{{ lead.callDeadlineAtTitle }}</td>
+            <td><button type="button" class="report-btn" (click)="openReportDialog(lead)">ثبت گزارش</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7">داده‌ای یافت نشد</td></tr>
+        }
+      </tbody>
+    </table>
   </div>
-</app-base-dialog>
+</section>
+
+@if (isDialogOpen) {
+  <div class="dialog-backdrop" dir="rtl">
+    <section class="dialog">
+      <header><h2>{{ dialogTitle }}</h2><button type="button" (click)="closeDialog()">×</button></header>
+      <div class="form">
+        <label>نتیجه تماس<select [(ngModel)]="reportForm.callResult">@for (option of callResultOptions; track option.value) { <option [ngValue]="option.value">{{ option.title }}</option> }</select></label>
+        <label>توضیحات گزارش<textarea rows="5" [(ngModel)]="reportForm.reportDescription" placeholder="توضیحات گزارش تماس را وارد کنید"></textarea></label>
+      </div>
+      <footer><button type="button" class="secondary" (click)="closeDialog()">انصراف</button><button type="button" [disabled]="dialogLoading" (click)="submitReport()">{{ dialogLoading ? 'در حال ثبت...' : 'ثبت' }}</button></footer>
+    </section>
+  </div>
+}

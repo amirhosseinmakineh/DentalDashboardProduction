@@ -2,19 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
-import { TableAction, TableColumn, TableComponent } from '../../../shared/components/table/table.component';
 import { ConsultantLeadDto, SubmitLeadCallReportCommand } from '../../../core/models/consultant-lead.models';
 import { ToastrService } from '../../../core/services/toastr.service';
 import { ConsultantService } from '../../../core/services/consultant.service';
 import { getApiMessage, getHttpErrorMessage } from '../../../core/services/api-response.util';
 
-type LeadRow = ConsultantLeadDto & { assignmentTypeTitle: string; leadStateTitle: string; assignedAtTitle: string; callDeadlineAtTitle: string; };
+type LeadRow = ConsultantLeadDto & {
+  assignmentTypeTitle: string;
+  leadStateTitle: string;
+  assignedAtTitle: string;
+  callDeadlineAtTitle: string;
+};
 
 @Component({
   selector: 'app-consultant-lead-managment',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableComponent, BaseDialogComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './consultant-lead-managment.component.html',
   styleUrl: './consultant-lead-managment.component.css'
 })
@@ -34,53 +37,106 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   dialogTitle = 'ثبت گزارش تماس';
   dialogMode = 'create';
   selectedLead: ConsultantLeadDto | null = null;
-  reportForm: SubmitLeadCallReportCommand = { leadAssignmentId: 0, consultantProfileId: 0, callResult: 1, reportDescription: '' };
+  reportForm: SubmitLeadCallReportCommand = {
+    leadAssignmentId: 0,
+    consultantProfileId: 0,
+    callResult: 1,
+    reportDescription: ''
+  };
 
-  columns: TableColumn[] = [
-    { key: 'userName', title: 'نام مشتری' }, { key: 'phoneNumber', title: 'شماره موبایل' },
-    { key: 'assignmentTypeTitle', title: 'نوع لید' }, { key: 'leadStateTitle', title: 'وضعیت' },
-    { key: 'assignedAtTitle', title: 'زمان تخصیص' }, { key: 'callDeadlineAtTitle', title: 'مهلت تماس' }
-  ];
-  customActions: TableAction[] = [{ key: 'submitReport', title: 'ثبت گزارش', icon: '📝', className: 'report-btn' }];
   callResultOptions = [
-    { value: 1, title: 'تماس گرفته شد' }, { value: 2, title: 'تبدیل شد' }, { value: 3, title: 'رد شد' },
-    { value: 4, title: 'پاسخ نداد' }, { value: 5, title: 'شماره اشتباه' }, { value: 6, title: 'نیاز به پیگیری' }
+    { value: 1, title: 'تماس گرفته شد' },
+    { value: 2, title: 'تبدیل شد' },
+    { value: 3, title: 'رد شد' },
+    { value: 4, title: 'پاسخ نداد' },
+    { value: 5, title: 'شماره اشتباه' },
+    { value: 6, title: 'نیاز به پیگیری' }
   ];
 
-  get tableRows(): Record<string, unknown>[] {
-    return this.leads.map((lead) => ({ ...lead, assignmentTypeTitle: this.getAssignmentTypeTitle(lead.assignmentType), leadStateTitle: this.getLeadStateTitle(lead.leadAssignmentState), assignedAtTitle: this.formatDate(lead.assignedAt), callDeadlineAtTitle: this.formatDate(lead.callDeadlineAt) }));
+  get tableRows(): LeadRow[] {
+    return this.leads.map((lead) => ({
+      ...lead,
+      assignmentTypeTitle: this.getAssignmentTypeTitle(lead.assignmentType),
+      leadStateTitle: this.getLeadStateTitle(lead.leadAssignmentState),
+      assignedAtTitle: this.formatDate(lead.assignedAt),
+      callDeadlineAtTitle: this.formatDate(lead.callDeadlineAt)
+    }));
   }
 
-  ngOnInit(): void { this.resolveProfileId(); if (this.profileId) this.loadLeads(); }
+  ngOnInit(): void {
+    this.resolveProfileId();
 
-  getAssignmentTypeTitle(type: number): string { return type === 1 ? 'RealTime' : type === 2 ? 'OfflineQueue' : '-'; }
-  getLeadStateTitle(state: number): string { return ({1:'جدید',2:'تخصیص داده شده',3:'تماس گرفته شده',4:'در انتظار',5:'تبدیل شده',6:'منقضی شده',7:'رد شده'} as Record<number,string>)[state] ?? '-'; }
+    if (this.profileId) {
+      this.loadLeads();
+    }
+  }
 
-  onTableAction(event: { action: string; row: Record<string, unknown> }): void { if (event.action === 'submitReport') this.openReportDialog(event.row as unknown as ConsultantLeadDto); }
+  getAssignmentTypeTitle(type: number): string {
+    return type === 1 ? 'RealTime' : type === 2 ? 'OfflineQueue' : '-';
+  }
+
+  getLeadStateTitle(state: number): string {
+    return ({
+      1: 'جدید',
+      2: 'تخصیص داده شده',
+      3: 'تماس گرفته شده',
+      4: 'در انتظار',
+      5: 'تبدیل شده',
+      6: 'منقضی شده',
+      7: 'رد شده'
+    } as Record<number, string>)[state] ?? '-';
+  }
 
   openReportDialog(lead: ConsultantLeadDto): void {
-    if (!this.canSubmitReport(lead)) { this.toastr.warning('این لید قبلاً تعیین تکلیف شده است'); return; }
+    if (!this.canSubmitReport(lead)) {
+      this.toastr.warning('این لید قبلاً تعیین تکلیف شده است');
+      return;
+    }
+
     this.selectedLead = lead;
-    this.reportForm = { leadAssignmentId: lead.id, consultantProfileId: this.profileId, callResult: 1, reportDescription: '' };
+    this.reportForm = {
+      leadAssignmentId: lead.id,
+      consultantProfileId: this.profileId,
+      callResult: 1,
+      reportDescription: ''
+    };
     this.isDialogOpen = true;
   }
 
   submitReport(): void {
-    if (!this.reportForm.callResult || !this.reportForm.reportDescription.trim()) { this.toastr.warning('نتیجه تماس و توضیحات گزارش الزامی است'); return; }
+    if (!this.reportForm.callResult || !this.reportForm.reportDescription.trim()) {
+      this.toastr.warning('نتیجه تماس و توضیحات گزارش الزامی است');
+      return;
+    }
+
     this.dialogLoading = true;
     this.consultantService.submitLeadCallReport(this.reportForm).subscribe({
-      next: (response) => { this.toastr.success(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد')); this.closeDialog(); this.loadLeads(); },
+      next: (response) => {
+        this.toastr.success(getApiMessage(response, 'گزارش تماس با موفقیت ثبت شد'));
+        this.closeDialog();
+        this.loadLeads();
+      },
       error: (error) => this.toastr.error(getHttpErrorMessage(error)),
       complete: () => this.dialogLoading = false
     });
   }
 
-  closeDialog(): void { this.isDialogOpen = false; this.selectedLead = null; }
+  closeDialog(): void {
+    this.isDialogOpen = false;
+    this.selectedLead = null;
+  }
 
   private loadLeads(): void {
     this.loading = true;
-    this.consultantService.getLeads({ profileId: this.profileId, pageNumber: this.pageNumber, pageSize: this.pageSize }).subscribe({
-      next: (response) => { this.leads = response.items; this.totalCount = response.totalCount; },
+    this.consultantService.getLeads({
+      profileId: this.profileId,
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize
+    }).subscribe({
+      next: (response) => {
+        this.leads = response.items;
+        this.totalCount = response.totalCount;
+      },
       error: (error) => this.toastr.error(getHttpErrorMessage(error)),
       complete: () => this.loading = false
     });
@@ -89,17 +145,39 @@ export class ConsultantLeadManagmentComponent implements OnInit {
   private resolveProfileId(): void {
     const routeProfileId = Number(this.route.snapshot.paramMap.get('profileId'));
     this.profileId = routeProfileId || this.getProfileIdFromStorage();
-    if (!this.profileId) this.toastr.error('شناسه پروفایل مشاور یافت نشد');
+
+    if (!this.profileId) {
+      this.toastr.error('شناسه پروفایل مشاور یافت نشد');
+    }
   }
 
   private getProfileIdFromStorage(): number {
     const keys = ['consultantProfileId', 'profileId'];
-    for (const key of keys) { const value = Number(localStorage.getItem(key)); if (value) return value; }
+
+    for (const key of keys) {
+      const value = Number(localStorage.getItem(key));
+      if (value) return value;
+    }
+
     const profile = localStorage.getItem('profile') ?? localStorage.getItem('user');
-    if (profile) { try { const parsed = JSON.parse(profile) as Record<string, unknown>; return Number(parsed['consultantProfileId'] ?? parsed['profileId'] ?? parsed['id']) || 0; } catch { return 0; } }
+
+    if (profile) {
+      try {
+        const parsed = JSON.parse(profile) as Record<string, unknown>;
+        return Number(parsed['consultantProfileId'] ?? parsed['profileId'] ?? parsed['id']) || 0;
+      } catch {
+        return 0;
+      }
+    }
+
     return 0;
   }
 
-  private canSubmitReport(lead: ConsultantLeadDto): boolean { return !lead.reportSubmittedAt && ![5, 6, 7].includes(lead.leadAssignmentState); }
-  private formatDate(value?: string): string { return value ? new Date(value).toLocaleString('fa-IR') : '-'; }
+  private canSubmitReport(lead: ConsultantLeadDto): boolean {
+    return !lead.reportSubmittedAt && ![5, 6, 7].includes(lead.leadAssignmentState);
+  }
+
+  private formatDate(value?: string): string {
+    return value ? new Date(value).toLocaleString('fa-IR') : '-';
+  }
 }

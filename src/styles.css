@@ -43,3 +43,6 @@ body { min-width: 320px; overflow-x: hidden; }
   .app-shell-body { padding-inline: 32px; grid-template-columns: 300px minmax(0, 1fr); }
   .table-card, .hero-card, .state-card { padding: 28px; }
 }
+
+.fa-solid, .fa-regular { margin-inline-end: 6px; line-height: 1; }
+.app-bottom-nav .fa-solid, .app-bottom-nav .fa-regular { margin-inline-end: 0; font-size: 18px; }

@@ -36,7 +36,7 @@ export interface TableAction { icon: string; label: string; onClick: (row: Recor
     <ng-template #actionButtons let-row>
       <button *ngIf="showEdit" class="icon-btn" type="button" (click)="edit.emit(row); selectedRow.set(null); toast.info('ویرایش انتخاب شد')">✎ ویرایش</button>
       <button *ngIf="showDelete" class="icon-btn danger" type="button" (click)="delete.emit(row); selectedRow.set(null); toast.warning('حذف انتخاب شد')">🗑 حذف</button>
-      <button *ngFor="let a of customActions" class="icon-btn" type="button" (click)="a.onClick(row); selectedRow.set(null); toast.success(a.label + ' انجام شد')">{{ a.icon }} {{ a.label }}</button>
+      <button *ngFor="let a of customActions" class="icon-btn" type="button" (click)="a.onClick(row); selectedRow.set(null); toast.success(a.label + ' انجام شد')"><i *ngIf="a.icon.startsWith('fa')" [class]="a.icon" aria-hidden="true"></i><span *ngIf="!a.icon.startsWith('fa')">{{ a.icon }}</span> {{ a.label }}</button>
     </ng-template>
   `
 })

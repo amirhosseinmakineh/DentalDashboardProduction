@@ -23,8 +23,8 @@ export const routes: Routes = [
     { path: 'users', component: AdminUsersPage },
     { path: 'consultants', component: AdminConsultantsPage },
     { path: 'leads', component: AdminLeadsPage },
-    { path: 'consultant-leads', component: AdminConsultantLeadsPage },
-    { path: 'consultant-attendance', component: AdminConsultantAttendancePage }
+    { path: 'consultants/:consultantId/leads', component: AdminConsultantLeadsPage },
+    { path: 'consultants/:consultantId/attendance', component: AdminConsultantAttendancePage }
   ]},
   { path: 'consultant', component: ConsultantShellComponent, children: [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

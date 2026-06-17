@@ -1,6 +1,5 @@
-:host { display:block; min-height:100vh; background:var(--color-bg); color:var(--color-text); direction:rtl; }
-.app-shell { min-height:calc(100vh - 136px); padding:var(--space-4); }
-.auth-tabs { display:flex; gap:var(--space-1); padding:4px; background:var(--color-cream); border-radius:var(--radius-lg); margin-bottom:var(--space-3); }
-.auth-tabs button { flex:1; border:0; border-radius:var(--radius-md); padding:var(--space-2); background:transparent; cursor:pointer; font-weight:700; }
-.auth-tabs button.active { background:#fff; box-shadow:var(--shadow-sm); color:var(--color-primary); }
-.form-grid { display:grid; gap:var(--space-3); }
+:host { display:block; min-height:100dvh; background:var(--color-bg); color:var(--color-text); direction:rtl; }
+.public-header { position:sticky; top:0; z-index:8; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:rgba(255,253,248,.88); backdrop-filter:blur(18px); border-bottom:1px solid #efe3d2; }
+.auth-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:6px; background:var(--color-cream); border-radius:18px; margin-bottom:16px; }
+.auth-tabs button { border:0; border-radius:14px; padding:12px; background:transparent; font-weight:800; }
+.auth-tabs button.active { background:#fff; color:var(--color-primary); box-shadow:var(--shadow-sm); }

@@ -1,28 +1,14 @@
-<app-header (authRequested)="openAuth($event)"></app-header>
-<main class="app-shell">
-  <router-outlet></router-outlet>
-</main>
-<app-footer></app-footer>
-<app-base-dialog
-  [open]="authOpen()"
-  [title]="authTab() === 'login' ? 'ورود به حساب' : 'عضویت در سیستم'"
-  [confirmLabel]="authTab() === 'login' ? 'ورود' : 'ثبت عضویت'"
-  [cancelLabel]="'بستن'"
-  (closed)="authOpen.set(false)">
-  <div class="auth-tabs">
-    <button [class.active]="authTab() === 'login'" (click)="authTab.set('login')">Login</button>
-    <button [class.active]="authTab() === 'register'" (click)="authTab.set('register')">Register</button>
+<header class="public-header">
+  <a class="brand" routerLink="/">Dental App</a>
+  <div class="auth-actions">
+    <button class="btn ghost" type="button" (click)="openAuth('login')">ورود</button>
+    <button class="btn primary" type="button" (click)="openAuth('register')">عضویت</button>
   </div>
-  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm">
-    <label>شماره موبایل<input class="control" placeholder="0912 000 0000" /></label>
-    <label>رمز عبور<input class="control" type="password" placeholder="••••••••" /></label>
-  </form>
-  <ng-template #registerForm>
-    <form class="form-grid">
-      <label>نام کامل<input class="control" placeholder="نام و نام خانوادگی" /></label>
-      <label>شماره موبایل<input class="control" placeholder="0912 000 0000" /></label>
-      <label>نقش<select class="control"><option>Patient</option><option>Consultant</option></select></label>
-      <label>رمز عبور<input class="control" type="password" placeholder="••••••••" /></label>
-    </form>
-  </ng-template>
+</header>
+<router-outlet />
+<app-base-toast />
+<app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود نمایشی' : 'ثبت نمایشی'" (closed)="authOpen.set(false)" (confirm)="authOpen.set(false)">
+  <div class="auth-tabs"><button [class.active]="authTab() === 'login'" (click)="authTab.set('login')">Login</button><button [class.active]="authTab() === 'register'" (click)="authTab.set('register')">Register</button></div>
+  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm"><input class="control" placeholder="شماره موبایل"/><input class="control" type="password" placeholder="رمز عبور"/></form>
+  <ng-template #registerForm><form class="form-grid"><input class="control" placeholder="نام کامل"/><input class="control" placeholder="شماره موبایل"/><select class="control"><option>Patient</option><option>Consultant</option><option>Admin</option></select><input class="control" type="password" placeholder="رمز عبور"/></form></ng-template>
 </app-base-dialog>

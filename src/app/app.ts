@@ -1,22 +1,17 @@
 import { Component, signal } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { BaseDialogComponent } from './base/base-dialog/base-dialog.component';
-import { HeaderComponent } from './layout/header/header.component';
-import { FooterComponent } from './layout/footer/footer.component';
+import { BaseToastComponent } from './base/base-toast/base-toast.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NgIf, HeaderComponent, FooterComponent, BaseDialogComponent],
+  imports: [RouterOutlet, RouterLink, NgIf, BaseDialogComponent, BaseToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   readonly authOpen = signal(false);
   readonly authTab = signal<'login' | 'register'>('login');
-
-  openAuth(tab: 'login' | 'register') {
-    this.authTab.set(tab);
-    this.authOpen.set(true);
-  }
+  openAuth(tab: 'login' | 'register') { this.authTab.set(tab); this.authOpen.set(true); }
 }

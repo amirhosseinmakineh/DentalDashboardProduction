@@ -6,6 +6,8 @@ import { PatientShellComponent } from './pages/shells/patient-shell.component';
 import { AdminUsersPage } from './pages/admin/admin-users.page';
 import { AdminConsultantsPage } from './pages/admin/admin-consultants.page';
 import { AdminLeadsPage } from './pages/admin/admin-leads.page';
+import { AdminConsultantLeadsPage } from './pages/admin/admin-consultant-leads.page';
+import { AdminConsultantAttendancePage } from './pages/admin/admin-consultant-attendance.page';
 import { ConsultantAttendancePage } from './pages/consultant/consultant-attendance.page';
 import { ConsultantLeadsPage } from './pages/consultant/consultant-leads.page';
 import { ConsultantProfilesPage } from './pages/consultant/consultant-profiles.page';
@@ -20,7 +22,9 @@ export const routes: Routes = [
     { path: '', redirectTo: 'users', pathMatch: 'full' },
     { path: 'users', component: AdminUsersPage },
     { path: 'consultants', component: AdminConsultantsPage },
-    { path: 'leads', component: AdminLeadsPage }
+    { path: 'leads', component: AdminLeadsPage },
+    { path: 'consultant-leads', component: AdminConsultantLeadsPage },
+    { path: 'consultant-attendance', component: AdminConsultantAttendancePage }
   ]},
   { path: 'consultant', component: ConsultantShellComponent, children: [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

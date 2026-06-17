@@ -16,3 +16,9 @@ export const reservations = [
   { date: '1405/03/30', time: '10:00', consultant: 'مشاور کیانی', status: 'تاییدشده' },
   { date: '1405/04/04', time: '16:30', consultant: 'دکتر نادری', status: 'در انتظار' }
 ];
+
+export const consultantAttendance = [
+  { consultant: 'دکتر نادری', date: '1405/03/28', checkIn: '08:45', checkOut: '16:20', status: 'حاضر' },
+  { consultant: 'مشاور کیانی', date: '1405/03/28', checkIn: '09:10', checkOut: 'در حال کار', status: 'آنلاین' },
+  { consultant: 'دکتر نادری', date: '1405/03/27', checkIn: '-', checkOut: '-', status: 'غایب' }
+];

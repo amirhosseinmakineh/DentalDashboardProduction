@@ -17,8 +17,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   `
 })
 export class BaseLayoutComponent {
-  @Input() role = 'Dashboard';
-  @Input() title = 'Dental Dashboard';
+  @Input() role = 'داشبورد';
+  @Input() title = 'داشبورد دندانپزشکی';
   @Input() menu: { label: string; path: string; icon: string }[] = [];
   drawerOpen = signal(false);
 }

@@ -1,0 +1,8 @@
+import { Component, inject, signal } from '@angular/core';
+import { BaseTableComponent } from '../../base/base-table/base-table.component';
+import { BaseDialogComponent } from '../../base/base-dialog/base-dialog.component';
+import { BaseDatePickerComponent } from '../../base/base-date-picker/base-date-picker.component';
+import { BaseToastService } from '../../base/base-toast/base-toast.service';
+import { profiles } from '../../shared/mock-data';
+@Component({selector:'app-consultant-profiles-page',standalone:true,imports:[BaseTableComponent,BaseDialogComponent,BaseDatePickerComponent],template:`<section class="screen-stack consultant-dashboard"><article class="hero-card"><small>Consultant Dashboard</small><h2>Patient Profiles</h2><p>Review and create patient profile records.</p></article><app-base-table [columns]="columns" [rows]="profiles" [filters]="filters" (add)="open('Create Patient Profile')" (edit)="open('Edit Patient Profile')" /></section><app-base-dialog [open]="!!dialog()" [title]="dialog()" (closed)="dialog.set('')" (confirm)="save()"><div class="form-grid"><input class="control" placeholder="Patient name"/><input class="control" placeholder="Treatment"/><app-base-date-picker label="Last visit" /></div></app-base-dialog>`})
+export class ConsultantProfilesPage{private toast=inject(BaseToastService);profiles=profiles;dialog=signal('');columns=[{key:'name',label:'Name'},{key:'phone',label:'Phone'},{key:'treatment',label:'Treatment'}];filters=[{key:'treatment',label:'Treatment',type:'text' as const}];open(t:string){this.dialog.set(t)}save(){this.toast.success('Profile action saved in mock UI');this.dialog.set('')}}

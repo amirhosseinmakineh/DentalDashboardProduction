@@ -12,7 +12,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
         <input class="control" inputmode="numeric" maxlength="2" placeholder="روز" [value]="day" (input)="day = $any($event.target).value" />
       </div>
       <button class="btn ghost compact" type="button" (click)="emitDate()">انتخاب تاریخ</button>
-      <small>تقویم فارسی نمایشی است؛ خروجی رویداد Gregorian Date می‌باشد.</small>
+      <small>تقویم فارسی نمایشی است؛ خروجی رویداد تاریخ میلادی می‌باشد.</small>
     </label>
   `
 })

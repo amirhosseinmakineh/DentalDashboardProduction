@@ -1,0 +1,6 @@
+:host { display:block; min-height:100vh; background:var(--color-bg); color:var(--color-text); direction:rtl; }
+.app-shell { min-height:calc(100vh - 136px); padding:var(--space-4); }
+.auth-tabs { display:flex; gap:var(--space-1); padding:4px; background:var(--color-cream); border-radius:var(--radius-lg); margin-bottom:var(--space-3); }
+.auth-tabs button { flex:1; border:0; border-radius:var(--radius-md); padding:var(--space-2); background:transparent; cursor:pointer; font-weight:700; }
+.auth-tabs button.active { background:#fff; box-shadow:var(--shadow-sm); color:var(--color-primary); }
+.form-grid { display:grid; gap:var(--space-3); }

@@ -1,0 +1,3 @@
+import { Component } from '@angular/core';
+@Component({selector:'app-patient-profile-page',standalone:true,template:`<section class="screen-stack patient-dashboard"><article class="hero-card"><small>Patient Dashboard</small><h2>My Profile</h2><p>View your mock dental profile and current treatment summary.</p></article><article class="state-card profile-card"><h3>Negar Saeedi</h3><p>09126667777 · Read-only demo profile</p><div class="profile-grid"><span>Active treatment: Orthodontics</span><span>Consultant: Dr. Mohammadi</span><span>Last visit: 1405/03/12</span></div></article></section>`})
+export class PatientProfilePage{}

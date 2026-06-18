@@ -11,11 +11,11 @@ import { users } from '../../shared/mock-data';
   imports: [BaseTableComponent, BaseDialogComponent, BaseDatePickerComponent],
   template: `
     <section class="screen-stack admin-dashboard">
-      <article class="hero-card"><small>Admin Dashboard</small><h2>User Management</h2><p>Create, edit, filter, and review mock dashboard users.</p></article>
-      <app-base-table [columns]="columns" [rows]="users" [filters]="filters" (add)="open('Add User')" (edit)="open('Edit User')" (delete)="remove()" />
+      <article class="hero-card"><small>داشبورد مدیر</small><h2>مدیریت کاربران</h2><p>ساخت، ویرایش، فیلتر و بررسی کاربران نمایشی داشبورد.</p></article>
+      <app-base-table [columns]="columns" [rows]="users" [filters]="filters" (add)="open('افزودن کاربر')" (edit)="open('ویرایش کاربر')" (delete)="remove()" />
     </section>
-    <app-base-dialog [open]="!!dialog()" [title]="dialog()" (closed)="dialog.set('')" (confirm)="save()">
-      <div class="form-grid"><input class="control" placeholder="Full name"/><input class="control" placeholder="Mobile"/><select class="control"><option>Patient</option><option>Consultant</option><option>Admin</option></select><app-base-date-picker label="Created date" /></div>
+    <app-base-dialog [open]="!!dialog()" [title]="dialog()" [confirmLabel]="dialog()==='ویرایش کاربر' ? 'ذخیره تغییرات کاربر' : 'ایجاد کاربر'" (closed)="dialog.set('')" (confirm)="save()">
+      <div class="form-grid"><input class="control" placeholder="نام کامل کاربر"/><input class="control" placeholder="شماره موبایل"/><select class="control"><option>بیمار</option><option>مشاور</option><option>مدیر</option></select><select class="control"><option>فعال</option><option>در انتظار</option><option>غیرفعال</option></select><app-base-date-picker [label]="dialog()==='ویرایش کاربر' ? 'تاریخ آخرین بروزرسانی' : 'تاریخ ایجاد'" /></div>
     </app-base-dialog>`
 })
-export class AdminUsersPage { private toast = inject(BaseToastService); users = users; dialog = signal(''); columns = [{key:'name',label:'Name'},{key:'phone',label:'Mobile'},{key:'role',label:'Role'},{key:'status',label:'Status'}]; filters = [{key:'role',label:'Role',type:'select' as const,options:['Patient','Consultant','Admin']},{key:'status',label:'Status',type:'select' as const,options:['Active','Pending']}]; open(title: string){this.dialog.set(title)} save(){this.toast.success('User action saved in mock UI'); this.dialog.set('')} remove(){this.toast.warning('User removed in mock UI')} }
+export class AdminUsersPage { private toast = inject(BaseToastService); users = users; dialog = signal(''); columns = [{key:'name',label:'نام'},{key:'phone',label:'موبایل'},{key:'role',label:'نقش'},{key:'status',label:'وضعیت'}]; filters = [{key:'role',label:'نقش',type:'select' as const,options:['بیمار','مشاور','مدیر']},{key:'status',label:'وضعیت',type:'select' as const,options:['فعال','در انتظار']}]; open(title: string){this.dialog.set(title)} save(){this.toast.success(`${this.dialog()} با موفقیت ثبت شد`); this.dialog.set('')} remove(){this.toast.warning('کاربر در رابط نمایشی حذف شد')} }

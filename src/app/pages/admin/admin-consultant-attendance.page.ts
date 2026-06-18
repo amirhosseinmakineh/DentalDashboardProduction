@@ -22,5 +22,5 @@ export class AdminConsultantAttendancePage implements OnInit {
   changePage(page:number){this.pageNumber.set(page);this.loadAttendance();}
   setPageSize(size:number){this.pageSize.set(Number(size));this.pageNumber.set(1);this.loadAttendance();}
   statusLabel(value?:number|string){if(value===1||value==='1')return'حاضر';if(value===2||value==='2')return'غایب';if(value===3||value==='3')return'آنلاین';return value ? String(value) : 'نامشخص';}
-  private normalize(response:PagedResponse<AttendanceDto>){if(Array.isArray(response))return{items:response,totalCount:response.length,totalPages:1};const items=response.items??response.data??[];const totalCount=response.totalCount??items.length;return{items,totalCount,totalPages:Math.max(1,response.totalPages??Math.ceil(totalCount/this.pageSize()))};}
+  private normalize(response:PagedResponse<AttendanceDto>){if(Array.isArray(response))return{items:response,totalCount:response.length,totalPages:1};const items=response.items??response.data??[];const totalCount=response.totalCount??items.length;return{items,totalCount,totalPages:Math.max(1,Math.ceil(totalCount/this.pageSize()))};}
 }

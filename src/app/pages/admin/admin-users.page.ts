@@ -220,7 +220,7 @@ export class AdminUsersPage implements OnInit {
   }
 
   private extractList<T>(response: ApiListResponse<T>) { return Array.isArray(response) ? response : response.data ?? response.items ?? response.result ?? []; }
-  private extractPage<T>(response: ApiListResponse<T>) { const items = this.extractList(response); const totalCount = Array.isArray(response) ? items.length : response.totalCount ?? items.length; return { items, totalCount, totalPages: Math.max(1, Array.isArray(response) ? 1 : response.totalPages ?? Math.ceil(totalCount / this.filters.PageSize)) }; }
+  private extractPage<T>(response: ApiListResponse<T>) { const items = this.extractList(response); const totalCount = Array.isArray(response) ? items.length : response.totalCount ?? items.length; return { items, totalCount, totalPages: Math.max(1, Math.ceil(totalCount / this.filters.PageSize)) }; }
   private defaultFilters(): UserFilters { return { FirstName:'', LastName:'', RoleName:'', PhoneNumber:'', IsActive:'', PageNumber:1, PageSize:10 }; }
   private emptyForm(): UserForm { return { id:'', firstName:'', lastName:'', phoneNumber:'', passwordHash:'', avatarImageName:'', gender:Gender.Male, birthDate:new Date().toISOString(), roleName:'', isActive:true }; }
 }

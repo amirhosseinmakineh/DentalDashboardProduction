@@ -27,6 +27,6 @@ export class AdminConsultantLeadsPage implements OnInit {
   leadStateLabel(value?:number){return this.states.find((state)=>state.value===value)?.label ?? 'نامشخص';}
   leadTypeLabel(value?:number){return value===1?'RealTime / لحظه‌ای':value===2?'OfflineQueue / صف آفلاین':'نامشخص';}
   private params(){let params=new HttpParams().set('ConsultantProfileId',this.profileId).set('ProfileId',this.profileId).set('consultantProfileId',this.profileId).set('PageNumber',this.filters.PageNumber).set('PageSize',this.filters.PageSize);(['leadAssignmentState','LeadAssignmentType'] as const).forEach((key)=>{const value=this.filters[key];if(value!=='')params=params.set(key,String(value));});return params;}
-  private normalize(response:PagedResponse<ConsultantLeadDto>){if(Array.isArray(response))return{items:response,totalCount:response.length,totalPages:1};const items=response.items??response.data??[];const totalCount=response.totalCount??items.length;return{items,totalCount,totalPages:Math.max(1,response.totalPages??Math.ceil(totalCount/this.filters.PageSize))};}
+  private normalize(response:PagedResponse<ConsultantLeadDto>){if(Array.isArray(response))return{items:response,totalCount:response.length,totalPages:1};const items=response.items??response.data??[];const totalCount=response.totalCount??items.length;return{items,totalCount,totalPages:Math.max(1,Math.ceil(totalCount/this.filters.PageSize))};}
   private defaultFilters():LeadFilters{return{leadAssignmentState:'',LeadAssignmentType:'',PageNumber:1,PageSize:10};}
 }

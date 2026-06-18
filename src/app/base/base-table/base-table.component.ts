@@ -13,6 +13,7 @@ export interface TableAction { icon: string; label: string; onClick: (row: Recor
     <section class="table-card">
       <div class="table-toolbar">
         <input class="control search" placeholder="جستجو..." (input)="search.set($any($event.target).value); page.set(1)" />
+        <label class="page-size-control"><span>تعداد در صفحه</span><select class="control" [value]="pageSize()" (change)="setPageSize($any($event.target).value)"><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="50">50</option></select></label>
         <button *ngIf="showAdd" class="btn primary" type="button" (click)="add.emit(); toast.info('فرم افزودن باز شد')">+ افزودن</button>
       </div>
       <app-base-filter-panel *ngIf="filters.length" [filters]="filters" (filtersChange)="filterValues.set($event); page.set(1)" />
@@ -29,7 +30,7 @@ export interface TableAction { icon: string; label: string; onClick: (row: Recor
           <button *ngIf="hasActions()" class="btn ghost" type="button" (click)="selectedRow.set(row)">عملیات</button>
         </article>
       </div>
-      <footer class="pagination"><button class="btn ghost" [disabled]="page()===1" (click)="page.set(page()-1)">قبلی</button><span>{{ page() }} / {{ pages() }}</span><button class="btn ghost" [disabled]="page()===pages()" (click)="page.set(page()+1)">بعدی</button></footer>
+      <footer class="pagination"><button class="btn ghost" [disabled]="page()===1" (click)="page.set(page()-1)">قبلی</button><span>صفحه {{ page() }} از {{ pages() }}</span><button class="btn ghost" [disabled]="page()===pages()" (click)="page.set(page()+1)">بعدی</button></footer>
     </section>
     <div class="action-sheet-backdrop" *ngIf="selectedRow()" (click)="selectedRow.set(null)"></div>
     <section class="action-sheet" *ngIf="selectedRow()"><b>عملیات ردیف</b><ng-container *ngTemplateOutlet="actionButtons; context: {$implicit: selectedRow()}"></ng-container><button class="btn ghost" (click)="selectedRow.set(null)">بستن</button></section>
@@ -53,11 +54,12 @@ export class BaseTableComponent {
   @Output() add = new EventEmitter<void>();
   @Output() edit = new EventEmitter<Record<string, unknown>>();
   @Output() delete = new EventEmitter<Record<string, unknown>>();
-  search = signal(''); page = signal(1); pageSize = 6; selectedRow = signal<Record<string, unknown> | null>(null); filterValues = signal<FilterValues>({});
+  search = signal(''); page = signal(1); pageSize = signal(10); selectedRow = signal<Record<string, unknown> | null>(null); filterValues = signal<FilterValues>({});
   hasActions() { return this.showEdit || this.showDelete || this.customActions.length > 0; }
   filtered = computed(() => this.rows.filter((row) => this.matchesSearch(row) && this.matchesFilters(row)));
-  pages = computed(() => Math.max(1, Math.ceil(this.filtered().length / this.pageSize)));
-  paged = computed(() => this.filtered().slice((this.page() - 1) * this.pageSize, this.page() * this.pageSize));
+  pages = computed(() => Math.max(1, Math.ceil(this.filtered().length / this.pageSize())));
+  paged = computed(() => this.filtered().slice((this.page() - 1) * this.pageSize(), this.page() * this.pageSize()));
+  setPageSize(value: string) { this.pageSize.set(Number(value)); this.page.set(1); }
   private matchesSearch(row: Record<string, unknown>) { return JSON.stringify(row).toLowerCase().includes(this.search().toLowerCase()); }
   private matchesFilters(row: Record<string, unknown>) { return Object.entries(this.filterValues()).every(([key, value]) => !value || String(row[key] ?? '').toLowerCase().includes(String(value).toLowerCase())); }
 }

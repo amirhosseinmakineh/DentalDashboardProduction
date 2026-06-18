@@ -8,7 +8,7 @@ import { BaseToastService } from '../../base/base-toast/base-toast.service';
 
 enum Gender { Male = 1, Female = 2 }
 
-type ApiListResponse<T> = T[] | { data?: T[]; items?: T[]; result?: T[] };
+type ApiListResponse<T> = T[] | { data?: T[]; items?: T[]; result?: T[]; totalCount?: number; totalPages?: number; pageNumber?: number; pageSize?: number };
 
 interface RoleDto { id?: string; name?: string; roleName?: string; title?: string; }
 interface UserDto {
@@ -65,7 +65,7 @@ interface UserFilters {
           <button class="btn primary" type="button" (click)="loadUsers()"><i class="fa-solid fa-magnifying-glass"></i> اعمال فیلترها</button>
           <button class="btn ghost" type="button" (click)="resetFilters()"><i class="fa-solid fa-rotate-right"></i> پاک‌سازی فیلترها</button>
         </div>
-        <div class="table-toolbar"><button class="btn primary" type="button" (click)="openCreate()"><i class="fa-solid fa-user-plus"></i> افزودن کاربر جدید</button></div>
+        <div class="table-toolbar"><label class="page-size-control"><span>تعداد در صفحه</span><select class="control" [ngModel]="filters.PageSize" (ngModelChange)="setPageSize($event)"><option [ngValue]="5">5</option><option [ngValue]="10">10</option><option [ngValue]="20">20</option><option [ngValue]="50">50</option></select></label><button class="btn primary" type="button" (click)="openCreate()"><i class="fa-solid fa-user-plus"></i> افزودن کاربر جدید</button></div>
         <div *ngIf="loading()" class="state-card">در حال دریافت کاربران...</div>
         <div *ngIf="!loading() && !users().length" class="state-card">کاربری برای نمایش وجود ندارد.</div>
         <div class="desktop-table" *ngIf="!loading() && users().length">
@@ -74,6 +74,7 @@ interface UserFilters {
           </table>
         </div>
         <div class="mobile-cards" *ngIf="!loading() && users().length"><article class="mobile-row-card" *ngFor="let user of users()"><dl><dt>نام</dt><dd>{{ user.firstName }} {{ user.lastName }}</dd><dt>موبایل</dt><dd>{{ user.phoneNumber }}</dd><dt>نقش</dt><dd>{{ user.roleName }}</dd><dt>وضعیت حساب</dt><dd>{{ user.isActive ? 'فعال' : 'غیرفعال' }}</dd></dl><div class="actions"><button class="btn ghost" type="button" (click)="openEdit(user)">ویرایش</button><button class="btn danger" type="button" (click)="deleteUser(user)">حذف</button></div></article></div>
+        <footer class="pagination"><button class="btn ghost" type="button" [disabled]="filters.PageNumber === 1" (click)="changePage(filters.PageNumber - 1)">قبلی</button><span>صفحه {{ filters.PageNumber }} از {{ totalPages() }} - تعداد کل: {{ totalCount() }}</span><button class="btn ghost" type="button" [disabled]="filters.PageNumber === totalPages()" (click)="changePage(filters.PageNumber + 1)">بعدی</button></footer>
       </section>
     </section>
 
@@ -104,6 +105,8 @@ export class AdminUsersPage implements OnInit {
   readonly editing = signal(false);
   readonly avatarPreview = signal('');
   readonly filtersOpen = signal(false);
+  readonly totalCount = signal(0);
+  readonly totalPages = signal(1);
   filters: UserFilters = this.defaultFilters();
   form: UserForm = this.emptyForm();
 
@@ -122,12 +125,14 @@ export class AdminUsersPage implements OnInit {
   loadUsers() {
     this.loading.set(true);
     this.http.get<ApiListResponse<UserDto>>(`${this.apiBase}/user`, { params: this.userFilterParams() }).subscribe({
-      next: (response) => { this.users.set(this.extractList(response)); this.loading.set(false); },
+      next: (response) => { const page = this.extractPage(response); this.users.set(page.items); this.totalCount.set(page.totalCount); this.totalPages.set(page.totalPages); this.loading.set(false); },
       error: () => { this.toast.error('دریافت کاربران ناموفق بود'); this.loading.set(false); }
     });
   }
 
   resetFilters() { this.filters = this.defaultFilters(); this.loadUsers(); }
+  changePage(page: number) { this.filters.PageNumber = page; this.loadUsers(); }
+  setPageSize(size: number) { this.filters.PageSize = Number(size); this.filters.PageNumber = 1; this.loadUsers(); }
   setBirthDate(value: Date) { this.form.birthDate = value.toISOString(); }
   openCreate() { this.editing.set(false); this.form = this.emptyForm(); this.avatarPreview.set(''); this.dialogOpen.set(true); }
   openEdit(user: UserDto) {
@@ -215,6 +220,7 @@ export class AdminUsersPage implements OnInit {
   }
 
   private extractList<T>(response: ApiListResponse<T>) { return Array.isArray(response) ? response : response.data ?? response.items ?? response.result ?? []; }
-  private defaultFilters(): UserFilters { return { FirstName:'', LastName:'', RoleName:'', PhoneNumber:'', IsActive:'', PageNumber:1, PageSize:1 }; }
+  private extractPage<T>(response: ApiListResponse<T>) { const items = this.extractList(response); const totalCount = Array.isArray(response) ? items.length : response.totalCount ?? items.length; return { items, totalCount, totalPages: Math.max(1, Array.isArray(response) ? 1 : response.totalPages ?? Math.ceil(totalCount / this.filters.PageSize)) }; }
+  private defaultFilters(): UserFilters { return { FirstName:'', LastName:'', RoleName:'', PhoneNumber:'', IsActive:'', PageNumber:1, PageSize:10 }; }
   private emptyForm(): UserForm { return { id:'', firstName:'', lastName:'', phoneNumber:'', passwordHash:'', avatarImageName:'', gender:Gender.Male, birthDate:new Date().toISOString(), roleName:'', isActive:true }; }
 }

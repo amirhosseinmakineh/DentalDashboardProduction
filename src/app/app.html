@@ -1,14 +1,14 @@
 <header class="public-header">
-  <a class="brand" routerLink="/">Dental App</a>
+  <a class="brand" routerLink="/">داشبورد دندانپزشکی</a>
   <div class="auth-actions">
-    <button class="btn ghost" type="button" (click)="openAuth('login')">Login</button>
-    <button class="btn primary" type="button" (click)="openAuth('register')">Register</button>
+    <button class="btn ghost" type="button" (click)="openAuth('login')">ورود</button>
+    <button class="btn primary" type="button" (click)="openAuth('register')">عضویت</button>
   </div>
 </header>
 <router-outlet />
 <app-base-toast />
 <app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود نمایشی' : 'ثبت نمایشی'" (closed)="authOpen.set(false)" (confirm)="authOpen.set(false)">
-  <div class="auth-tabs"><button [class.active]="authTab() === 'login'" (click)="authTab.set('login')">Login</button><button [class.active]="authTab() === 'register'" (click)="authTab.set('register')">Register</button></div>
+  <div class="auth-tabs"><button [class.active]="authTab() === 'login'" (click)="authTab.set('login')">ورود</button><button [class.active]="authTab() === 'register'" (click)="authTab.set('register')">عضویت</button></div>
   <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm"><input class="control" placeholder="شماره موبایل"/><input class="control" type="password" placeholder="رمز عبور"/></form>
-  <ng-template #registerForm><form class="form-grid"><input class="control" placeholder="نام کامل"/><input class="control" placeholder="شماره موبایل"/><select class="control"><option>Patient</option><option>Consultant</option><option>Admin</option></select><input class="control" type="password" placeholder="رمز عبور"/></form></ng-template>
+  <ng-template #registerForm><form class="form-grid"><input class="control" placeholder="نام کامل"/><input class="control" placeholder="شماره موبایل"/><select class="control"><option>بیمار</option><option>مشاور</option><option>مدیر</option></select><input class="control" type="password" placeholder="رمز عبور"/></form></ng-template>
 </app-base-dialog>

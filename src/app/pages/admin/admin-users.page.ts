@@ -3,6 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BaseDialogComponent } from '../../base/base-dialog/base-dialog.component';
+import { BaseDatePickerComponent as AdminUserDatePickerComponent } from '../../base/base-date-picker/base-date-picker.component';
 import { BaseToastService } from '../../base/base-toast/base-toast.service';
 
 enum Gender { Male = 1, Female = 2 }
@@ -48,7 +49,7 @@ interface UserFilters {
 @Component({
   selector: 'app-admin-users-page',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, BaseDialogComponent, BaseDatePickerComponent],
+  imports: [NgFor, NgIf, FormsModule, BaseDialogComponent, AdminUserDatePickerComponent],
   template: `
     <section class="screen-stack admin-dashboard">
       <article class="hero-card"><small>داشبورد مدیر</small><h2>مدیریت کاربران</h2><p>لیست، افزودن، ویرایش و حذف کاربران به صورت داینامیک از API انجام می‌شود.</p></article>

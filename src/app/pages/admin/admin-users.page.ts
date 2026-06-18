@@ -3,7 +3,6 @@ import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BaseDialogComponent } from '../../base/base-dialog/base-dialog.component';
-import { BaseDatePickerComponent } from '../../base/base-date-picker/base-date-picker.component';
 import { BaseToastService } from '../../base/base-toast/base-toast.service';
 
 enum Gender { Male = 1, Female = 2 }

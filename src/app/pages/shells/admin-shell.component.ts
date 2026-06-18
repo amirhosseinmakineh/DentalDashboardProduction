@@ -1,4 +1,4 @@
 import { Component } from '@angular/core';
-import { BaseLayoutComponent } from '../../base/base-layout/base-layout.component';
-@Component({selector:'app-admin-shell', standalone:true, imports:[BaseLayoutComponent], template:`<app-base-layout role="admin" title="Admin Dashboard" [menu]="menu" />`})
-export class AdminShellComponent { menu=[{label:'User Management',path:'/admin/users',icon:'👥'},{label:'Consultant Management',path:'/admin/consultants',icon:'🧑‍⚕️'},{label:'System Leads Management',path:'/admin/leads',icon:'📋'}]; }
+import { BaseLayoutComponent, LayoutMenuItem } from '../../base/base-layout/base-layout.component';
+@Component({selector:'app-admin-shell', standalone:true, imports:[BaseLayoutComponent], template:`<app-base-layout role="مدیر" title="داشبورد مدیر" [menu]="menu" />`})
+export class AdminShellComponent { menu: LayoutMenuItem[]=[{label:'مدیریت کاربران',path:'/admin/users',icon:'fa-solid fa-users-gear'},{label:'مدیریت مشاوران',path:'/admin/consultants',icon:'fa-solid fa-user-doctor'},{label:'مشاهده لیدهای سیستم',path:'/admin/leads',icon:'fa-solid fa-list-check'}]; }

@@ -41,9 +41,6 @@ interface UserFilters {
   RoleName: string;
   PhoneNumber: string;
   IsActive: string;
-  CreateDate: string;
-  UpdateDate: string;
-  DeleteDate: string;
   PageNumber: number;
   PageSize: number;
 }
@@ -51,7 +48,7 @@ interface UserFilters {
 @Component({
   selector: 'app-admin-users-page',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, BaseDialogComponent],
+  imports: [NgFor, NgIf, FormsModule, BaseDialogComponent, BaseDatePickerComponent],
   template: `
     <section class="screen-stack admin-dashboard">
       <article class="hero-card"><small>داشبورد مدیر</small><h2>مدیریت کاربران</h2><p>لیست، افزودن، ویرایش و حذف کاربران به صورت داینامیک از API انجام می‌شود.</p></article>
@@ -64,9 +61,6 @@ interface UserFilters {
           <label><span>شماره موبایل کاربر</span><input class="control" placeholder="مثلا: 0912..." [(ngModel)]="filters.PhoneNumber" /></label>
           <label><span>نقش کاربر</span><select class="control" [(ngModel)]="filters.RoleName"><option value="">همه نقش‌ها</option><option *ngFor="let role of roles()" [value]="roleName(role)">{{ roleName(role) }}</option></select></label>
           <label><span>وضعیت حساب کاربر</span><select class="control" [(ngModel)]="filters.IsActive"><option value="">فعال و غیرفعال</option><option value="true">فقط کاربران فعال</option><option value="false">فقط کاربران غیرفعال</option></select></label>
-          <div class="field"><span>تاریخ ایجاد کاربر</span><div class="jalali-input"><input class="control" placeholder="سال" [(ngModel)]="dateParts.CreateDate.year"/><input class="control" placeholder="ماه" [(ngModel)]="dateParts.CreateDate.month"/><input class="control" placeholder="روز" [(ngModel)]="dateParts.CreateDate.day"/></div><button class="btn ghost compact" type="button" (click)="setFilterDate('CreateDate')">اعمال تاریخ ایجاد</button></div>
-          <div class="field"><span>تاریخ آخرین ویرایش کاربر</span><div class="jalali-input"><input class="control" placeholder="سال" [(ngModel)]="dateParts.UpdateDate.year"/><input class="control" placeholder="ماه" [(ngModel)]="dateParts.UpdateDate.month"/><input class="control" placeholder="روز" [(ngModel)]="dateParts.UpdateDate.day"/></div><button class="btn ghost compact" type="button" (click)="setFilterDate('UpdateDate')">اعمال تاریخ ویرایش</button></div>
-          <div class="field"><span>تاریخ حذف کاربر</span><div class="jalali-input"><input class="control" placeholder="سال" [(ngModel)]="dateParts.DeleteDate.year"/><input class="control" placeholder="ماه" [(ngModel)]="dateParts.DeleteDate.month"/><input class="control" placeholder="روز" [(ngModel)]="dateParts.DeleteDate.day"/></div><button class="btn ghost compact" type="button" (click)="setFilterDate('DeleteDate')">اعمال تاریخ حذف</button></div>
           <button class="btn primary" type="button" (click)="loadUsers()"><i class="fa-solid fa-magnifying-glass"></i> اعمال فیلترها</button>
           <button class="btn ghost" type="button" (click)="resetFilters()"><i class="fa-solid fa-rotate-right"></i> پاک‌سازی فیلترها</button>
         </div>
@@ -90,7 +84,7 @@ interface UserFilters {
         <input *ngIf="!editing()" class="control" type="password" placeholder="رمز عبور / passwordHash" [(ngModel)]="form.passwordHash" />
         <select class="control" [(ngModel)]="form.roleName"><option value="">انتخاب نقش</option><option *ngFor="let role of roles()" [value]="roleName(role)">{{ roleName(role) }}</option></select>
         <select class="control" [(ngModel)]="form.gender"><option [ngValue]="1">مرد</option><option [ngValue]="2">زن</option></select>
-        <div class="field"><span>تاریخ تولد</span><div class="jalali-input"><input class="control" placeholder="سال" [(ngModel)]="birthDateParts.year"/><input class="control" placeholder="ماه" [(ngModel)]="birthDateParts.month"/><input class="control" placeholder="روز" [(ngModel)]="birthDateParts.day"/></div><button class="btn ghost compact" type="button" (click)="setBirthDate()">اعمال تاریخ تولد</button></div>
+        <app-base-date-picker label="تاریخ تولد" [value]="form.birthDate" (dateChange)="setBirthDate($event)" />
         <label class="field"><span>عکس کاربر</span><input class="control" type="file" accept="image/*" (change)="selectAvatar($event)" /></label>
         <div class="state-card" *ngIf="form.avatarImageName"><b>عکس انتخابی:</b> {{ form.avatarImageName }}<img *ngIf="avatarPreview()" [src]="avatarPreview()" alt="پیش‌نمایش عکس کاربر" class="avatar-preview" /></div>
         <label *ngIf="editing()"><input type="checkbox" [(ngModel)]="form.isActive" /> کاربر فعال است</label>
@@ -109,9 +103,6 @@ export class AdminUsersPage implements OnInit {
   readonly editing = signal(false);
   readonly avatarPreview = signal('');
   readonly filtersOpen = signal(false);
-  dateParts = { CreateDate: this.emptyDateParts(), UpdateDate: this.emptyDateParts(), DeleteDate: this.emptyDateParts() };
-  birthDateParts = this.defaultBirthDateParts();
-
   filters: UserFilters = this.defaultFilters();
   form: UserForm = this.emptyForm();
 
@@ -135,10 +126,9 @@ export class AdminUsersPage implements OnInit {
     });
   }
 
-  resetFilters() { this.filters = this.defaultFilters(); this.dateParts = { CreateDate: this.emptyDateParts(), UpdateDate: this.emptyDateParts(), DeleteDate: this.emptyDateParts() }; this.loadUsers(); }
-  setFilterDate(key: 'CreateDate' | 'UpdateDate' | 'DeleteDate') { this.filters[key] = this.toIsoFromParts(this.dateParts[key]); }
-  setBirthDate() { const birthDate = this.toIsoFromParts(this.birthDateParts); if (birthDate) this.form.birthDate = birthDate; }
-  openCreate() { this.editing.set(false); this.form = this.emptyForm(); this.birthDateParts = this.partsFromIso(this.form.birthDate); this.avatarPreview.set(''); this.dialogOpen.set(true); }
+  resetFilters() { this.filters = this.defaultFilters(); this.loadUsers(); }
+  setBirthDate(value: Date) { this.form.birthDate = value.toISOString(); }
+  openCreate() { this.editing.set(false); this.form = this.emptyForm(); this.avatarPreview.set(''); this.dialogOpen.set(true); }
   openEdit(user: UserDto) {
     this.editing.set(true);
     this.form = {
@@ -154,7 +144,6 @@ export class AdminUsersPage implements OnInit {
       isActive: user.isActive ?? true
     };
     this.avatarPreview.set('');
-    this.birthDateParts = this.partsFromIso(this.form.birthDate);
     this.dialogOpen.set(true);
   }
   closeDialog() { this.dialogOpen.set(false); }
@@ -217,22 +206,14 @@ export class AdminUsersPage implements OnInit {
 
   private userFilterParams() {
     let params = new HttpParams().set('PageNumber', this.filters.PageNumber).set('PageSize', this.filters.PageSize);
-    (['FirstName','LastName','RoleName','PhoneNumber','IsActive','CreateDate','UpdateDate','DeleteDate'] as const).forEach((key) => {
+    (['FirstName','LastName','RoleName','PhoneNumber','IsActive'] as const).forEach((key) => {
       const value = this.filters[key];
       if (value !== '') params = params.set(key, String(value));
     });
     return params;
   }
 
-  private toIsoFromParts(parts: { year: string; month: string; day: string }) {
-    if (!parts.year || !parts.month || !parts.day) return '';
-    const year = Number(parts.year) + 621;
-    return new Date(Date.UTC(year, Math.max(0, Number(parts.month) - 1), Number(parts.day))).toISOString();
-  }
-  private partsFromIso(value: string) { if (!value) return this.defaultBirthDateParts(); const date = new Date(value); return { year: String(date.getUTCFullYear() - 621), month: String(date.getUTCMonth() + 1).padStart(2, '0'), day: String(date.getUTCDate()).padStart(2, '0') }; }
-  private emptyDateParts() { return { year: '', month: '', day: '' }; }
-  private defaultBirthDateParts() { return { year: '1405', month: '01', day: '01' }; }
   private extractList<T>(response: ApiListResponse<T>) { return Array.isArray(response) ? response : response.data ?? response.items ?? response.result ?? []; }
-  private defaultFilters(): UserFilters { return { FirstName:'', LastName:'', RoleName:'', PhoneNumber:'', IsActive:'', CreateDate:'', UpdateDate:'', DeleteDate:'', PageNumber:1, PageSize:1 }; }
+  private defaultFilters(): UserFilters { return { FirstName:'', LastName:'', RoleName:'', PhoneNumber:'', IsActive:'', PageNumber:1, PageSize:1 }; }
   private emptyForm(): UserForm { return { id:'', firstName:'', lastName:'', phoneNumber:'', passwordHash:'', avatarImageName:'', gender:Gender.Male, birthDate:new Date().toISOString(), roleName:'', isActive:true }; }
 }

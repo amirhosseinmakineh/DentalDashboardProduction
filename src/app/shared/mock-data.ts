@@ -1,14 +1,7 @@
-export enum UserRole { Patient = 'بیمار', Consultant = 'مشاور', Admin = 'مدیر' }
-export enum UserStatus { Active = 'فعال', Pending = 'در انتظار' }
 export enum ConsultantStatus { Online = 'آنلاین', Present = 'حاضر', Absent = 'غایب' }
 export enum LeadStatus { New = 'جدید', Called = 'تماس گرفته' }
 export enum ReservationStatus { Confirmed = 'تاییدشده', Pending = 'در انتظار' }
 
-export const users = [
-  { name: 'سارا احمدی', phone: '09120001111', role: UserRole.Patient, status: UserStatus.Active },
-  { name: 'علی محمدی', phone: '09123334444', role: UserRole.Consultant, status: UserStatus.Active },
-  { name: 'مریم رضایی', phone: '09125556666', role: UserRole.Admin, status: UserStatus.Pending }
-];
 export const consultants = [
   { id: 'c-1001', name: 'دکتر نادری', phone: '09127778888', status: ConsultantStatus.Online, specialty: 'ایمپلنت' },
   { id: 'c-1002', name: 'مشاور کیانی', phone: '09129990000', status: ConsultantStatus.Present, specialty: 'ارتودنسی' }

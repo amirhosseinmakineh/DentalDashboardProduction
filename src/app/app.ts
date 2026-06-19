@@ -1,15 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { BaseDialogComponent } from './base/base-dialog/base-dialog.component';
 import { BaseToastComponent } from './base/base-toast/base-toast.component';
 import { BaseDatePickerComponent } from './base/base-date-picker/base-date-picker.component';
 import { BaseToastService } from './base/base-toast/base-toast.service';
-import { dashboardForRole, persistAuth } from './core/auth-context';
+import { currentRole, dashboardForRole, isAuthenticated, persistAuth } from './core/auth-context';
+import { readStorage } from './core/consultant-profile-context';
 
 interface AuthForm { firstName: string; lastName: string; phoneNumber: string; passwordHash: string; isCompleteProfile: boolean; avatarImageName: string; gender: number; birthDate: string; }
+interface HeaderUser { firstName: string; lastName: string; phoneNumber: string; role: string; }
 
 @Component({
   selector: 'app-root',
@@ -20,7 +23,19 @@ interface AuthForm { firstName: string; lastName: string; phoneNumber: string; p
 export class App {
   private readonly http=inject(HttpClient); private readonly router=inject(Router); private readonly toast=inject(BaseToastService); private readonly apiBase='http://localhost:5182/api';
   readonly authOpen = signal(false); readonly authTab = signal<'login' | 'register'>('login'); readonly authLoading=signal(false); readonly avatarPreview=signal(''); readonly authError=signal('');
+  readonly headerUser = signal<HeaderUser | null>(null);
+  readonly currentUrl = signal(this.router.url);
+  readonly dashboardUrl = computed(() => dashboardForRole(this.headerUser()?.role || currentRole()));
+  readonly isDashboardRoute = computed(() => /^\/(admin|consultant|patient)(\/|$)/.test(this.currentUrl()));
   authForm: AuthForm = { firstName: '', lastName: '', phoneNumber: '', passwordHash: '', isCompleteProfile: true, avatarImageName: '', gender: 1, birthDate: new Date().toISOString() };
+
+  constructor() {
+    this.refreshHeaderUser();
+    this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe(event => {
+      this.currentUrl.set(event.urlAfterRedirects);
+      this.refreshHeaderUser();
+    });
+  }
 
   openAuth(tab: 'login' | 'register') { this.authTab.set(tab); this.authOpen.set(true); }
   submitAuth() { this.authError.set(''); this.authTab() === 'login' ? this.login() : this.register(); }
@@ -34,6 +49,10 @@ export class App {
     reader.readAsDataURL(file);
   }
 
+  private refreshHeaderUser() {
+    if (!isAuthenticated()) { this.headerUser.set(null); return; }
+    this.headerUser.set({ firstName: readStorage('currentUserFirstName'), lastName: readStorage('currentUserLastName'), phoneNumber: readStorage('currentUserPhone'), role: currentRole() });
+  }
   private register() {
     if (!this.validateRegister()) return;
     this.authLoading.set(true);
@@ -53,6 +72,7 @@ export class App {
   }
   private finishAuth(response: unknown, phoneNumber: string, message: string) {
     const role = persistAuth(response, phoneNumber);
+    this.refreshHeaderUser();
     this.toast.success(message);
     this.authOpen.set(false); this.authLoading.set(false);
     this.router.navigateByUrl(dashboardForRole(role));

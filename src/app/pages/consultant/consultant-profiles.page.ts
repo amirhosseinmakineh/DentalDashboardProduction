@@ -1,8 +1,47 @@
 import { Component, inject, signal } from '@angular/core';
-import { BaseTableComponent } from '../../base/base-table/base-table.component';
-import { BaseDialogComponent } from '../../base/base-dialog/base-dialog.component';
-import { BaseDatePickerComponent } from '../../base/base-date-picker/base-date-picker.component';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { BaseToastService } from '../../base/base-toast/base-toast.service';
-import { profiles } from '../../shared/mock-data';
-@Component({selector:'app-consultant-profiles-page',standalone:true,imports:[BaseTableComponent,BaseDialogComponent,BaseDatePickerComponent],template:`<section class="screen-stack consultant-dashboard"><article class="hero-card"><small>داشبورد مشاور</small><h2>پرونده‌های بیماران</h2><p>مشاهده و ساخت پرونده‌های بیماران.</p></article><app-base-table [columns]="columns" [rows]="profiles" [filters]="filters" (add)="open('ساخت پرونده بیمار')" (edit)="open('ویرایش پرونده بیمار')" /></section><app-base-dialog [open]="!!dialog()" [title]="dialog()" [confirmLabel]="dialog()==='ویرایش پرونده بیمار' ? 'ذخیره پرونده' : 'ایجاد پرونده'" (closed)="dialog.set('')" (confirm)="save()"><div class="form-grid"><input class="control" placeholder="نام بیمار"/><input class="control" placeholder="شماره تماس بیمار"/><input class="control" placeholder="درمان اصلی"/><textarea class="control" placeholder="سوابق، حساسیت‌ها و توضیحات درمان"></textarea><app-base-date-picker label="آخرین مراجعه" /></div></app-base-dialog>`})
-export class ConsultantProfilesPage{private toast=inject(BaseToastService);profiles=profiles;dialog=signal('');columns=[{key:'name',label:'نام'},{key:'phone',label:'تلفن'},{key:'treatment',label:'درمان'}];filters=[{key:'treatment',label:'درمان',type:'text' as const}];open(t:string){this.dialog.set(t)}save(){this.toast.success(`${this.dialog()} با موفقیت ثبت شد`);this.dialog.set('')}}
+import { currentConsultantProfileId, extractConsultantProfileId, persistConsultantProfileId } from '../../core/consultant-profile-context';
+
+type ConsultantCompleteProfileResponse = number | string | { id?: number | string; profileId?: number | string; data?: unknown; result?: unknown };
+interface ConsultantProfileForm { nationalityCode: string; address: string; isCompleteProfile: boolean; }
+
+@Component({
+  selector:'app-consultant-profiles-page',
+  standalone:true,
+  imports:[NgIf, FormsModule],
+  template:`<section class="screen-stack consultant-dashboard">
+    <article class="hero-card"><small>داشبورد مشاور</small><h2>تکمیل پروفایل مشاور</h2><p>بعد از تکمیل پروفایل، بک‌اند یک عدد long به عنوان شناسه پروفایل برمی‌گرداند و همه عملیات حضور، آنلاین شدن و لیدها با همان شناسه انجام می‌شود.</p></article>
+    <section class="table-card">
+      <div class="state-card">شناسه پروفایل ذخیره‌شده: <strong>{{ profileId() || 'ثبت نشده' }}</strong></div>
+      <form class="form-grid" (ngSubmit)="saveProfile()">
+        <input class="control" name="nationalityCode" [(ngModel)]="form.nationalityCode" placeholder="کد ملی" required />
+        <textarea class="control" name="address" [(ngModel)]="form.address" placeholder="آدرس" required></textarea>
+        <button class="btn primary" type="submit" [disabled]="saving()">تکمیل پروفایل مشاور</button>
+      </form>
+      <p *ngIf="profileId()" class="state-card">پروفایل شما آماده است؛ اکنون می‌توانید در صفحه حضور دکمه «ثبت حضور» را بزنید و در صفحه «لیدهای من» اطلاعات را از API دریافت کنید.</p>
+    </section>
+  </section>`
+})
+export class ConsultantProfilesPage {
+  private readonly http=inject(HttpClient); private readonly toast=inject(BaseToastService); private readonly apiBase='http://localhost:5182/api';
+  readonly profileId=signal(currentConsultantProfileId()); readonly saving=signal(false);
+  form: ConsultantProfileForm = { nationalityCode: '', address: '', isCompleteProfile: true };
+
+  saveProfile(){
+    if(!this.form.nationalityCode.trim() || !this.form.address.trim()){this.toast.error('کد ملی و آدرس برای تکمیل پروفایل الزامی است');return;}
+    this.saving.set(true);
+    const payload={nationalityCode:this.form.nationalityCode.trim(),address:this.form.address.trim(),isCompleteProfile:true};
+    this.http.post<ConsultantCompleteProfileResponse>(`${this.apiBase}/Consultant`, payload).subscribe({
+      next:(response)=>{
+        const id=typeof response==='number'||typeof response==='string'?Number(response):extractConsultantProfileId(response);
+        if(id>0){this.profileId.set(id);persistConsultantProfileId(id);this.toast.success('پروفایل مشاور تکمیل شد و شناسه پروفایل ذخیره شد');}
+        else this.toast.error('شناسه پروفایل از پاسخ بک‌اند دریافت نشد');
+        this.saving.set(false);
+      },
+      error:()=>{this.toast.error('تکمیل پروفایل مشاور ناموفق بود');this.saving.set(false);}
+    });
+  }
+}

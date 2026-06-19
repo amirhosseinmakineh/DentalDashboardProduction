@@ -16,6 +16,7 @@ import { ConsultantReservationsPage } from './pages/consultant/consultant-reserv
 import { PatientProfilePage } from './pages/patient/patient-profile.page';
 import { PatientReservationsPage } from './pages/patient/patient-reservations.page';
 import { PatientRatingPage } from './pages/patient/patient-rating.page';
+import { ReceptionistComponent } from './pages/receptionist/receptionist.component';
 import { consultantProfileGuard, roleGuard } from './core/auth-context';
 
 export const routes: Routes = [
@@ -41,5 +42,6 @@ export const routes: Routes = [
     { path: 'profile', component: PatientProfilePage },
     { path: 'reservations', component: PatientReservationsPage },
     { path: 'rating', component: PatientRatingPage }
-  ]}
+  ]},
+  { path: 'receptionist', component: ReceptionistComponent, canActivate: [roleGuard(['Secretary'])] }
 ];

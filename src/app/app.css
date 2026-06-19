@@ -19,5 +19,6 @@
   .auth-actions { justify-content:flex-end; }
   .auth-actions .btn { font-size:12px; }
   .auth-actions .btn.ghost:nth-child(2) { display:none; }
+  .signed-in-actions .btn.ghost:nth-child(2) { display:inline-flex; }
   .user-chip { max-width:130px; overflow:hidden; text-overflow:ellipsis; }
 }

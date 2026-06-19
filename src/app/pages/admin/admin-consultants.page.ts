@@ -9,7 +9,7 @@ import { BaseToastService } from '../../base/base-toast/base-toast.service';
 type PagedResponse<T> = { items?: T[]; data?: T[]; totalCount?: number; pageNumber?: number; pageSize?: number; totalPages?: number } | T[];
 interface ConsultantDto { firstName?: string; lastName?: string; phoneNumber?: string; profileId: number; id: string; }
 interface ConsultantFilters { FirstName:string; LastName:string; PhoneNumber:string; PageNumber:number; PageSize:number; }
-interface ScoreForm { consultantProfileId:number; source:number; reason:number; scoreValue:number; description:string; leadAssignmentId:number; }
+interface ScoreForm { consultantProfileId:number; source?:number; reason:number; scoreValue:number; description:string; leadAssignmentId?:number|null; createdByUserId?:string|null; }
 
 @Component({
   selector:'app-admin-consultants-page',
@@ -33,21 +33,22 @@ interface ScoreForm { consultantProfileId:number; source:number; reason:number; 
       <footer class="pagination"><button class="btn ghost" type="button" [disabled]="filters.PageNumber === 1" (click)="changePage(filters.PageNumber - 1)">قبلی</button><label class="page-size-control"><span>تعداد در صفحه</span><select class="control" [ngModel]="filters.PageSize" (ngModelChange)="setPageSize($event)"><option [ngValue]="5">5</option><option [ngValue]="10">10</option><option [ngValue]="20">20</option><option [ngValue]="50">50</option></select></label><span>صفحه {{ filters.PageNumber }} از {{ totalPages() }} - تعداد کل: {{ totalCount() }}</span><button class="btn ghost" type="button" [disabled]="filters.PageNumber === totalPages()" (click)="changePage(filters.PageNumber + 1)">بعدی</button></footer>
     </section>
   </section>
-  <app-base-dialog [open]="ratingOpen()" title="ثبت امتیاز مدیریتی مشاور" confirmLabel="ثبت امتیاز" (closed)="ratingOpen.set(false)" (confirm)="saveRating()"><div class="form-grid"><input class="control" type="number" placeholder="مقدار امتیاز" [(ngModel)]="scoreForm.scoreValue" /><select class="control" [(ngModel)]="scoreForm.reason"><option [ngValue]="1">عملکرد عالی</option><option [ngValue]="2">پیگیری مناسب</option><option [ngValue]="3">نیازمند بهبود</option></select><textarea class="control" placeholder="توضیحات امتیاز" [(ngModel)]="scoreForm.description"></textarea></div></app-base-dialog>`
+  <app-base-dialog [open]="ratingOpen()" title="ثبت امتیاز مدیریتی مشاور" confirmLabel="ثبت امتیاز" (closed)="ratingOpen.set(false)" (confirm)="saveRating()"><div class="form-grid"><select class="control" [(ngModel)]="scoreForm.reason" (ngModelChange)="normalizeScoreValue()"><option [ngValue]="5">تشویق مدیر</option><option [ngValue]="6">جریمه مدیر</option></select><input class="control" type="number" placeholder="مقدار امتیاز" [(ngModel)]="scoreForm.scoreValue" /><textarea class="control" placeholder="توضیحات امتیاز" [(ngModel)]="scoreForm.description"></textarea><p class="state-card">تشویق باید صفر یا مثبت و جریمه باید صفر یا منفی باشد.</p></div></app-base-dialog>`
 })
 export class AdminConsultantsPage implements OnInit {
   private readonly http=inject(HttpClient); private readonly toast=inject(BaseToastService); private readonly router=inject(Router); private readonly apiBase='http://localhost:5182/api';
   readonly consultants=signal<ConsultantDto[]>([]); readonly loading=signal(false); readonly totalCount=signal(0); readonly totalPages=signal(1); readonly filtersOpen=signal(false); readonly ratingOpen=signal(false);
   filters:ConsultantFilters=this.defaultFilters();
-  scoreForm:ScoreForm={consultantProfileId:0,source:1,reason:1,scoreValue:0,description:'',leadAssignmentId:0};
+  scoreForm:ScoreForm={consultantProfileId:0,reason:5,scoreValue:0,description:'',leadAssignmentId:null,createdByUserId:null};
   ngOnInit(){this.loadConsultants();}
   resetFilters(){this.filters=this.defaultFilters();this.loadConsultants();}
   changePage(page:number){this.filters.PageNumber=page;this.loadConsultants();}
   setPageSize(size:number){this.filters.PageSize=Number(size);this.filters.PageNumber=1;this.loadConsultants();}
   loadConsultants(){this.loading.set(true);this.http.get<PagedResponse<ConsultantDto>>(`${this.apiBase}/Consultant/GetConsultants`,{params:this.filterParams()}).subscribe({next:(response)=>{const page=this.normalize(response);this.consultants.set(page.items);this.totalCount.set(page.totalCount);this.totalPages.set(page.totalPages);this.loading.set(false);},error:()=>{this.toast.error('دریافت لیست مشاوران ناموفق بود');this.loading.set(false);}});}
   openConsultantPage(row:ConsultantDto,section:'leads'|'attendance'){this.router.navigate(['/admin/consultants', row.profileId, section]);}
-  openRating(row:ConsultantDto){this.scoreForm={consultantProfileId:row.profileId,source:1,reason:1,scoreValue:0,description:'',leadAssignmentId:0};this.ratingOpen.set(true);}
-  saveRating(){this.http.post(`${this.apiBase}/ScoreLog`,this.scoreForm).subscribe({next:()=>{this.toast.success('امتیاز مدیریتی مشاور ثبت شد');this.ratingOpen.set(false);},error:()=>this.toast.error('ثبت امتیاز مشاور ناموفق بود')});}
+  openRating(row:ConsultantDto){this.scoreForm={consultantProfileId:row.profileId,reason:5,scoreValue:0,description:'',leadAssignmentId:null,createdByUserId:null};this.ratingOpen.set(true);}
+  saveRating(){if(this.scoreForm.reason===5&&this.scoreForm.scoreValue<0){this.toast.error('امتیاز تشویقی مدیر باید مثبت باشد');return;}if(this.scoreForm.reason===6&&this.scoreForm.scoreValue>0){this.toast.error('امتیاز جریمه مدیر باید منفی باشد');return;}this.http.post(`${this.apiBase}/ScoreLog`,this.scoreForm).subscribe({next:()=>{this.toast.success('امتیاز مدیریتی مشاور ثبت شد');this.ratingOpen.set(false);},error:()=>this.toast.error('ثبت امتیاز مشاور ناموفق بود')});}
+  normalizeScoreValue(){if(this.scoreForm.reason===5&&this.scoreForm.scoreValue<0)this.scoreForm.scoreValue=Math.abs(this.scoreForm.scoreValue);if(this.scoreForm.reason===6&&this.scoreForm.scoreValue>0)this.scoreForm.scoreValue=-Math.abs(this.scoreForm.scoreValue);}
   private filterParams(){let params=new HttpParams().set('PageNumber',this.filters.PageNumber).set('PageSize',this.filters.PageSize);(['FirstName','LastName','PhoneNumber'] as const).forEach((key)=>{const value=this.filters[key];if(value!=='')params=params.set(key,String(value));});return params;}
   private normalize(response:PagedResponse<ConsultantDto>){if(Array.isArray(response))return{items:response,totalCount:response.length,totalPages:1};const items=response.items??response.data??[];const totalCount=response.totalCount??items.length;return{items,totalCount,totalPages:Math.max(1,Math.ceil(totalCount/this.filters.PageSize))};}
   private defaultFilters():ConsultantFilters{return{FirstName:'',LastName:'',PhoneNumber:'',PageNumber:1,PageSize:10};}

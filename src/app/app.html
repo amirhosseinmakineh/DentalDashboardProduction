@@ -18,6 +18,7 @@
     <div class="auth-actions signed-in-actions">
       <span class="user-chip">{{ headerUser()?.firstName || 'کاربر' }} {{ headerUser()?.lastName || '' }}</span>
       <a class="btn primary" [routerLink]="dashboardUrl()">ورود به داشبورد</a>
+      <button class="btn ghost" type="button" (click)="logout()">خروج از حساب</button>
     </div>
   </ng-template>
 </header>
@@ -41,6 +42,7 @@
     <img *ngIf="avatarPreview()" [src]="avatarPreview()" alt="پیش‌نمایش تصویر پروفایل" style="max-width:120px;border-radius:18px" />
     <button class="btn primary" type="submit" [disabled]="authLoading()">ارسال درخواست ثبت‌نام</button>
   </form></ng-template>
+  <p *ngIf="authSuccess()" class="state-card">{{ authSuccess() }}</p>
   <p *ngIf="authError()" class="state-card">{{ authError() }}</p>
   <p *ngIf="authLoading()" class="state-card">در حال ارسال اطلاعات...</p>
 </app-base-dialog>

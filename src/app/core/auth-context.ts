@@ -5,7 +5,7 @@ import { currentConsultantProfileId, readStorage, removeStorage, writeStorage } 
 export type AppRole = 'Admin' | 'Patient' | 'Consultant' | 'Secretary' | 'NormalUser';
 
 const roleById: Record<string, AppRole> = { '1': 'Admin', '2': 'Patient', '3': 'Consultant', '4': 'Secretary', '5': 'NormalUser' };
-const dashboardByRole: Record<AppRole, string> = { Admin: '/admin', Patient: '/patient', Consultant: '/consultant', Secretary: '/', NormalUser: '/' };
+const dashboardByRole: Record<AppRole, string> = { Admin: '/admin', Patient: '/patient', Consultant: '/consultant', Secretary: '/receptionist', NormalUser: '/' };
 const authStorageKeys = ['authToken','currentUserRole','currentUserId','currentUserPhone','currentUserFirstName','currentUserLastName','consultantProfileId','consultantIsAvailable','consultantIsOnline'];
 
 export interface AuthLikeResponse { token?: string; accessToken?: string; jwtToken?: string; roleName?: string; role?: string | number; roleId?: string | number; userId?: string; id?: string; phoneNumber?: string; firstName?: string; lastName?: string; data?: AuthLikeResponse; result?: AuthLikeResponse; item?: AuthLikeResponse; }
@@ -46,7 +46,7 @@ export function clearAuth(): void {
   if (typeof localStorage === 'undefined') return;
   ['authToken', 'currentUserRole', 'currentUserId', 'currentUserPhone', 'currentUserFirstName', 'currentUserLastName', 'consultantProfileId'].forEach(key => localStorage.removeItem(key));
 }
-export function isAuthenticated(): boolean { return Boolean(token() || readStorage('currentUserPhone')); }
+export function isAuthenticated(): boolean { return Boolean(token()); }
 export function roleGuard(allowedRoles: AppRole[]): CanActivateFn {
   return () => {
     const router = inject(Router);

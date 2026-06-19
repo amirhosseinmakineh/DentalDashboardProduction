@@ -9,9 +9,9 @@ import { reservations } from '../../shared/mock-data';
 <section class="screen-stack patient-dashboard">
   <article class="hero-card"><small>داشبورد بیمار</small><h2>{{ pageTitle() }}</h2><p>{{ pageDescription() }}</p></article>
   @if (section() === 'profile') {
-    <article class="state-card profile-card"><h3>نگار سعیدی</h3><p>09126667777 · پرونده نمایشی فقط خواندنی</p><div class="profile-grid"><span>درمان فعال: ارتودنسی</span><span>مشاور: دکتر محمدی</span><span>آخرین مراجعه: 1403/05/12</span></div></article>
+    <article class="state-card profile-card"><h3>نگار سعیدی</h3><p>09126667777 · پرونده درمانی</p><div class="profile-grid"><span>درمان فعال: ارتودنسی</span><span>مشاور: دکتر محمدی</span><span>آخرین مراجعه: 1403/05/12</span></div></article>
   } @else if (section() === 'reservations') {
-    <app-base-table [columns]="cols" [rows]="reservations" [filters]="filters" [showEdit]="false" [showDelete]="false" (add)="toast.info('درخواست رزرو نمایشی ثبت شد')" />
+    <app-base-table [columns]="cols" [rows]="reservations" [filters]="filters" [showEdit]="false" [showDelete]="false" (add)="toast.info('درخواست رزرو ثبت شد')" />
   } @else {
     <article class="state-card"><h3>امتیاز به مشاور</h3><p>بعد از هر مراجعه می‌توانید کیفیت مشاوره را ثبت کنید.</p><button class="btn primary" (click)="rating.set(true)">ثبت امتیاز جدید</button></article>
   }

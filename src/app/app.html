@@ -1,14 +1,31 @@
 <header class="public-header">
   <a class="brand" routerLink="/">داشبورد دندانپزشکی</a>
-  <div class="auth-actions">
+  <div class="auth-actions" *ngIf="!isLoggedIn(); else loggedInHeader">
     <button class="btn ghost" type="button" (click)="openAuth('login')">ورود</button>
     <button class="btn primary" type="button" (click)="openAuth('register')">عضویت</button>
   </div>
+  <ng-template #loggedInHeader><div class="auth-actions"><strong>{{ displayName() }}</strong><a class="btn primary" [routerLink]="dashboardPath()">ورود به داشبورد</a><button class="btn ghost" type="button" (click)="logout()">خروج</button></div></ng-template>
 </header>
 <router-outlet />
 <app-base-toast />
-<app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود نمایشی' : 'ثبت نمایشی'" (closed)="authOpen.set(false)" (confirm)="authOpen.set(false)">
-  <div class="auth-tabs"><button [class.active]="authTab() === 'login'" (click)="authTab.set('login')">ورود</button><button [class.active]="authTab() === 'register'" (click)="authTab.set('register')">عضویت</button></div>
-  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm"><input class="control" placeholder="شماره موبایل"/><input class="control" type="password" placeholder="رمز عبور"/></form>
-  <ng-template #registerForm><form class="form-grid"><input class="control" placeholder="نام کامل"/><input class="control" placeholder="شماره موبایل"/><select class="control"><option>بیمار</option><option>مشاور</option><option>مدیر</option></select><input class="control" type="password" placeholder="رمز عبور"/></form></ng-template>
+<app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود' : 'ثبت عضویت'" [loading]="authLoading()" (closed)="authOpen.set(false)" (confirm)="submitAuth()">
+  <div class="auth-tabs"><button type="button" [class.active]="authTab() === 'login'" (click)="authTab.set('login')">ورود</button><button type="button" [class.active]="authTab() === 'register'" (click)="authTab.set('register')">عضویت</button></div>
+  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm" (ngSubmit)="submitAuth()">
+    <input class="control" name="loginPhone" [(ngModel)]="authForm.phoneNumber" placeholder="شماره موبایل" required />
+    <input class="control" name="loginPassword" [(ngModel)]="authForm.passwordHash" type="password" placeholder="رمز عبور" required />
+    <button class="btn primary" type="submit" [disabled]="authLoading()">ارسال درخواست ورود</button>
+  </form>
+  <ng-template #registerForm><form class="form-grid" (ngSubmit)="submitAuth()">
+    <input class="control" name="firstName" [(ngModel)]="authForm.firstName" placeholder="نام" required />
+    <input class="control" name="lastName" [(ngModel)]="authForm.lastName" placeholder="نام خانوادگی" required />
+    <input class="control" name="registerPhone" [(ngModel)]="authForm.phoneNumber" placeholder="شماره موبایل" required />
+    <input class="control" name="registerPassword" [(ngModel)]="authForm.passwordHash" type="password" placeholder="رمز عبور" required />
+    <select class="control" name="gender" [(ngModel)]="authForm.gender"><option [ngValue]="1">مرد</option><option [ngValue]="2">زن</option></select>
+    <app-base-date-picker label="تاریخ تولد" [value]="authForm.birthDate" (dateChange)="setBirthDate($event)" />
+    <label class="field"><span>تصویر پروفایل</span><input class="control" type="file" accept="image/*" (change)="onAvatarSelected($event)" /></label>
+    <img *ngIf="avatarPreview()" [src]="avatarPreview()" alt="پیش‌نمایش تصویر پروفایل" style="max-width:120px;border-radius:18px" />
+    <button class="btn primary" type="submit" [disabled]="authLoading()">ارسال درخواست ثبت‌نام</button>
+  </form></ng-template>
+  <p *ngIf="authError()" class="state-card">{{ authError() }}</p>
+  <p *ngIf="authLoading()" class="state-card">در حال ارسال اطلاعات...</p>
 </app-base-dialog>

@@ -38,6 +38,10 @@ export class App {
   }
 
   openAuth(tab: 'login' | 'register') { this.authTab.set(tab); this.authOpen.set(true); }
+  isLoggedIn() { this.authVersion(); return isAuthenticated(); }
+  displayName() { this.authVersion(); return currentFullName() || 'کاربر'; }
+  dashboardPath() { this.authVersion(); return dashboardForRole(currentRole()); }
+  logout() { clearAuth(); this.authVersion.update(v => v + 1); this.router.navigateByUrl('/'); }
   submitAuth() { this.authError.set(''); this.authTab() === 'login' ? this.login() : this.register(); }
   setBirthDate(date: Date) { this.authForm.birthDate = date.toISOString(); }
   onAvatarSelected(event: Event) {
@@ -74,7 +78,7 @@ export class App {
     const role = persistAuth(response, phoneNumber);
     this.refreshHeaderUser();
     this.toast.success(message);
-    this.authOpen.set(false); this.authLoading.set(false);
+    this.authOpen.set(false); this.authLoading.set(false); this.authVersion.update(v => v + 1);
     this.router.navigateByUrl(dashboardForRole(role));
   }
   private validateRegister() {

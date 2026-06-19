@@ -7,7 +7,7 @@ import { BaseDialogComponent } from './base/base-dialog/base-dialog.component';
 import { BaseToastComponent } from './base/base-toast/base-toast.component';
 import { BaseDatePickerComponent } from './base/base-date-picker/base-date-picker.component';
 import { BaseToastService } from './base/base-toast/base-toast.service';
-import { dashboardForRole, persistAuth } from './core/auth-context';
+import { clearAuth, currentFullName, currentRole, dashboardForRole, isAuthenticated, persistAuth } from './core/auth-context';
 
 interface AuthForm { firstName: string; lastName: string; phoneNumber: string; passwordHash: string; isCompleteProfile: boolean; avatarImageName: string; gender: number; birthDate: string; }
 
@@ -19,10 +19,14 @@ interface AuthForm { firstName: string; lastName: string; phoneNumber: string; p
 })
 export class App {
   private readonly http=inject(HttpClient); private readonly router=inject(Router); private readonly toast=inject(BaseToastService); private readonly apiBase='http://localhost:5182/api';
-  readonly authOpen = signal(false); readonly authTab = signal<'login' | 'register'>('login'); readonly authLoading=signal(false); readonly avatarPreview=signal(''); readonly authError=signal('');
+  readonly authOpen = signal(false); readonly authTab = signal<'login' | 'register'>('login'); readonly authLoading=signal(false); readonly avatarPreview=signal(''); readonly authError=signal(''); readonly authVersion=signal(0);
   authForm: AuthForm = { firstName: '', lastName: '', phoneNumber: '', passwordHash: '', isCompleteProfile: true, avatarImageName: '', gender: 1, birthDate: new Date().toISOString() };
 
   openAuth(tab: 'login' | 'register') { this.authTab.set(tab); this.authOpen.set(true); }
+  isLoggedIn() { this.authVersion(); return isAuthenticated(); }
+  displayName() { this.authVersion(); return currentFullName() || 'کاربر'; }
+  dashboardPath() { this.authVersion(); return dashboardForRole(currentRole()); }
+  logout() { clearAuth(); this.authVersion.update(v => v + 1); this.router.navigateByUrl('/'); }
   submitAuth() { this.authError.set(''); this.authTab() === 'login' ? this.login() : this.register(); }
   setBirthDate(date: Date) { this.authForm.birthDate = date.toISOString(); }
   onAvatarSelected(event: Event) {
@@ -54,7 +58,7 @@ export class App {
   private finishAuth(response: unknown, phoneNumber: string, message: string) {
     const role = persistAuth(response, phoneNumber);
     this.toast.success(message);
-    this.authOpen.set(false); this.authLoading.set(false);
+    this.authOpen.set(false); this.authLoading.set(false); this.authVersion.update(v => v + 1);
     this.router.navigateByUrl(dashboardForRole(role));
   }
   private validateRegister() {

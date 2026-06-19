@@ -16,12 +16,19 @@ export function writeStorage(key: string, value: string): void {
   if (typeof localStorage !== 'undefined') localStorage.setItem(key, value);
 }
 
+export function removeStorage(key: string): void {
+  if (typeof localStorage !== 'undefined') localStorage.removeItem(key);
+}
+
 export function currentConsultantProfileId(): number {
   return Number(readStorage('consultantProfileId', '0')) || 0;
 }
 
 export function persistConsultantProfileId(profileId: number): void {
-  if (profileId > 0) writeStorage('consultantProfileId', String(profileId));
+  if (profileId > 0) {
+    writeStorage('consultantProfileId', String(profileId));
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('consultant-profile-completed'));
+  }
 }
 
 export function currentUserPhone(): string {

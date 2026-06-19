@@ -4,6 +4,7 @@
     <button class="btn ghost" type="button" (click)="openAuth('login')">پورتال بیماران</button>
     <button class="btn primary" type="button" (click)="openAuth('register')">رزرو نوبت</button>
   </div>
+  <ng-template #loggedInHeader><div class="auth-actions"><strong>{{ displayName() }}</strong><a class="btn primary" [routerLink]="dashboardPath()">ورود به داشبورد</a><button class="btn ghost" type="button" (click)="logout()">خروج</button></div></ng-template>
 </header>
 <router-outlet />
 <app-base-toast />

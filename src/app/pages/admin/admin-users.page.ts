@@ -52,7 +52,7 @@ interface UserFilters {
   imports: [NgFor, NgIf, FormsModule, BaseDialogComponent, AdminUserDatePickerComponent],
   template: `
     <section class="screen-stack admin-dashboard">
-      <article class="hero-card"><small>داشبورد مدیر</small><h2>مدیریت کاربران</h2><p>لیست، افزودن، ویرایش و حذف کاربران به صورت داینامیک از API انجام می‌شود.</p></article>
+      <article class="hero-card"><small>داشبورد مدیر</small><h2>مدیریت کاربران</h2><p>لیست، افزودن، ویرایش و حذف کاربران را مدیریت کنید.</p></article>
 
       <section class="table-card">
         <button class="btn ghost filter-toggle" type="button" (click)="filtersOpen.set(!filtersOpen())"><i class="fa-solid fa-filter"></i> فیلترهای کاربران</button>
@@ -83,7 +83,7 @@ interface UserFilters {
         <input class="control" placeholder="نام" [(ngModel)]="form.firstName" />
         <input class="control" placeholder="نام خانوادگی" [(ngModel)]="form.lastName" />
         <input class="control" placeholder="شماره موبایل" [(ngModel)]="form.phoneNumber" />
-        <input *ngIf="!editing()" class="control" type="password" placeholder="رمز عبور / passwordHash" [(ngModel)]="form.passwordHash" />
+        <input *ngIf="!editing()" class="control" type="password" placeholder="رمز عبور" [(ngModel)]="form.passwordHash" />
         <select class="control" [(ngModel)]="form.roleName"><option value="">انتخاب نقش</option><option *ngFor="let role of roles()" [value]="roleName(role)">{{ roleName(role) }}</option></select>
         <select class="control" [(ngModel)]="form.gender"><option [ngValue]="1">مرد</option><option [ngValue]="2">زن</option></select>
         <app-base-date-picker label="تاریخ تولد" [value]="form.birthDate" (dateChange)="setBirthDate($event)" />

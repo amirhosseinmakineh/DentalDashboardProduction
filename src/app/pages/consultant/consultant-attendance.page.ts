@@ -29,9 +29,9 @@ const LeadAssignmentState = { Assigned: 2, Converted: 5, Expired: 6, Rejected: 7
       <h3>وضعیت حضور: {{ isAvailable() ? 'حاضر' : 'خارج از شیفت / ثبت‌نشده' }}</h3>
       <p>وضعیت دریافت لید: <strong>{{ leadReceiveStatus() }}</strong> - لید آفلاین باز: {{ openOfflineCount() }} - لید لحظه‌ای فعال: {{ activeRealTimeCount() }}</p>
       <div class="quick-actions">
-        <button class="btn primary" [disabled]="!profileId || actionLoading()" (click)="setAvailable(true)">ثبت حضور</button>
-        <button class="btn danger" [disabled]="!profileId || actionLoading()" (click)="setAvailable(false)">ثبت خروج</button>
-        <button class="btn" [disabled]="!profileId || isOnline() || hasOpenOfflineLead() || hasActiveRealTime() || actionLoading()" (click)="setOnline(true)">آنلاین شدن</button>
+        <button class="btn primary" [disabled]="!profileId || isAvailable() || actionLoading()" (click)="setAvailable(true)">ثبت حضور</button>
+        <button class="btn danger" [disabled]="!profileId || !isAvailable() || actionLoading()" (click)="setAvailable(false)">ثبت خروج</button>
+        <button class="btn" [disabled]="!profileId || !isAvailable() || isOnline() || hasOpenOfflineLead() || hasActiveRealTime() || actionLoading()" (click)="setOnline(true)">آنلاین شدن</button>
         <button class="btn ghost" [disabled]="!profileId || !isOnline() || actionLoading()" (click)="setOnline(false)">آفلاین شدن</button>
       </div>
       <p *ngIf="hasOpenOfflineLead()" class="state-card">ابتدا لیدهای آفلاین باز را در صفحه «لیدهای من» تعیین تکلیف کنید.</p>
@@ -43,7 +43,7 @@ export class ConsultantAttendancePage implements OnInit, OnDestroy {
   private readonly http=inject(HttpClient); private readonly toast=inject(BaseToastService); private readonly apiBase='http://localhost:5182/api'; private poll?: ReturnType<typeof setInterval>;
   profileId=currentConsultantProfileId();
   readonly isAvailable=signal(readStorage('consultantIsAvailable')==='true'); readonly isOnline=signal(readStorage('consultantIsOnline')==='true'); readonly leads=signal<LeadAssignmentItem[]>([]); readonly actionLoading=signal(false);
-  readonly openOfflineCount=computed(()=>this.leads().filter(l=>l.leadAssignmentType===LeadAssignmentType.OfflineQueue&&!this.isFinalLeadState(l.leadAssignmentState)).length);
+  readonly openOfflineCount=computed(()=>this.leads().filter(l=>this.isOpenOfflineLead(l)).length);
   readonly activeRealTimeCount=computed(()=>this.leads().filter(l=>l.leadAssignmentType===LeadAssignmentType.RealTime&&l.leadAssignmentState===LeadAssignmentState.Assigned).length);
   readonly hasOpenOfflineLead=computed(()=>this.openOfflineCount()>0); readonly hasActiveRealTime=computed(()=>this.activeRealTimeCount()>0);
   readonly leadReceiveStatus=computed(()=>this.hasActiveRealTime()?'مشغول تماس':this.isOnline()?'آنلاین':'آفلاین');
@@ -53,5 +53,5 @@ export class ConsultantAttendancePage implements OnInit, OnDestroy {
   loadLeads(showError=true){if(!this.profileId){this.leads.set([]);return;}const params=new HttpParams().set('profileId',this.profileId).set('pageNumber',1).set('pageSize',50);this.http.get<PagedResponse<LeadAssignmentItem>>(`${this.apiBase}/Consultant/GetLeads`,{params}).subscribe({next:r=>this.leads.set(Array.isArray(r)?r:(r.items??r.data??[])),error:()=>showError&&this.toast.error('دریافت لیدهای مشاور ناموفق بود')});}
   resolveProfileId(showMessage=false){const stored=currentConsultantProfileId();if(stored){this.profileId=stored;return;}const phone=currentUserPhone();if(!phone){if(showMessage)this.toast.error('شماره موبایل کاربر لاگین‌شده پیدا نشد؛ ابتدا پروفایل مشاور را تکمیل کنید');return;}const params=new HttpParams().set('phoneNumber',phone).set('pageNumber',1).set('pageSize',1);this.http.get<any>(`${this.apiBase}/Consultant/GetConsultants`,{params}).subscribe({next:r=>{const items=Array.isArray(r)?r:(r.items??r.data??[]);const id=extractConsultantProfileId(items);if(id){this.profileId=id;persistConsultantProfileId(id);this.loadLeads(false);if(showMessage)this.toast.success('شناسه پروفایل مشاور همگام‌سازی شد');}else if(showMessage)this.toast.error('برای این شماره موبایل پروفایل مشاور پیدا نشد؛ ابتدا تکمیل پروفایل را انجام دهید');},error:()=>showMessage&&this.toast.error('همگام‌سازی پروفایل مشاور ناموفق بود')});}
   private handleResult(r:ApiResult,success:()=>void){r.isSuccess?this.toast.success(r.message):this.toast.error(r.message);if(r.isSuccess)success();this.actionLoading.set(false);} private persistState(){writeStorage('consultantIsAvailable',String(this.isAvailable()));writeStorage('consultantIsOnline',String(this.isOnline()));}
-  private isFinalLeadState(state:number){return [LeadAssignmentState.Converted,LeadAssignmentState.Rejected,LeadAssignmentState.Expired].includes(state as 5|6|7);}
+  private isOpenOfflineLead(lead:LeadAssignmentItem){return lead.leadAssignmentType===LeadAssignmentType.OfflineQueue&&lead.leadAssignmentState===LeadAssignmentState.Assigned;}
 }

@@ -22,7 +22,7 @@ interface HeaderUser { firstName: string; lastName: string; phoneNumber: string;
 })
 export class App {
   private readonly http=inject(HttpClient); private readonly router=inject(Router); private readonly toast=inject(BaseToastService); private readonly apiBase='http://localhost:5182/api';
-  readonly authOpen = signal(false); readonly authVersion = signal(0); readonly authTab = signal<'login' | 'register'>('login'); readonly authLoading=signal(false); readonly avatarPreview=signal(''); readonly authError=signal('');
+  readonly authOpen = signal(false); readonly authVersion = signal(0); readonly authTab = signal<'login' | 'register'>('login'); readonly authLoading=signal(false); readonly avatarPreview=signal(''); readonly authError=signal(''); readonly authSuccess=signal('');
   readonly headerUser = signal<HeaderUser | null>(null);
   readonly currentUrl = signal(this.router.url);
   readonly dashboardUrl = computed(() => dashboardForRole(this.headerUser()?.role || currentRole()));
@@ -37,12 +37,12 @@ export class App {
     });
   }
 
-  openAuth(tab: 'login' | 'register') { this.authTab.set(tab); this.authOpen.set(true); }
+  openAuth(tab: 'login' | 'register') { this.authError.set(''); this.authSuccess.set(''); this.authTab.set(tab); this.authOpen.set(true); }
   isLoggedIn() { this.authVersion(); return isAuthenticated(); }
   displayName() { this.authVersion(); const firstName = readStorage('currentUserFirstName').trim(); const lastName = readStorage('currentUserLastName').trim(); return `${firstName} ${lastName}`.trim() || this.headerUser()?.phoneNumber || 'کاربر'; }
   dashboardPath() { this.authVersion(); return dashboardForRole(currentRole()); }
   logout() { clearAuth(); this.authVersion.update((value: number) => value + 1); this.refreshHeaderUser(); this.router.navigateByUrl('/'); }
-  submitAuth() { this.authError.set(''); this.authTab() === 'login' ? this.login() : this.register(); }
+  submitAuth() { this.authError.set(''); this.authSuccess.set(''); this.authTab() === 'login' ? this.login() : this.register(); }
   setBirthDate(date: Date) { this.authForm.birthDate = date.toISOString(); }
   onAvatarSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -62,17 +62,25 @@ export class App {
     this.authLoading.set(true);
     const payload = { ...this.authForm, phoneNumber: this.authForm.phoneNumber.trim(), firstName: this.authForm.firstName.trim(), lastName: this.authForm.lastName.trim() };
     this.http.post(`${this.apiBase}/Auth`, payload).subscribe({
-      next: (response) => this.finishAuth(response, payload.phoneNumber, 'ثبت‌نام با موفقیت انجام شد'),
+      next: () => this.finishRegistration(payload.phoneNumber),
       error: () => { this.authError.set('ثبت‌نام ناموفق بود'); this.toast.error('ثبت‌نام ناموفق بود'); this.authLoading.set(false); }
     });
   }
   private login() {
+    this.authSuccess.set('');
     if (!this.authForm.phoneNumber.trim() || !this.authForm.passwordHash) { this.authError.set('شماره موبایل و رمز عبور الزامی است'); this.toast.error('شماره موبایل و رمز عبور الزامی است'); return; }
     this.authLoading.set(true);
     this.http.post(`${this.apiBase}/Auth/Login`, { phoneNumber: this.authForm.phoneNumber.trim(), passwordHash: this.authForm.passwordHash }).subscribe({
       next: (response) => this.finishAuth(response, this.authForm.phoneNumber.trim(), 'ورود با موفقیت انجام شد'),
       error: () => { this.authError.set('ورود ناموفق بود'); this.toast.error('ورود ناموفق بود'); this.authLoading.set(false); }
     });
+  }
+  private finishRegistration(phoneNumber: string) {
+    this.authForm.phoneNumber = phoneNumber;
+    this.authTab.set('login');
+    this.authLoading.set(false);
+    this.authSuccess.set('ثبت‌نام با موفقیت انجام شد؛ برای صدور توکن و ورود به داشبورد، دکمه ورود را بزنید.');
+    this.toast.success('ثبت‌نام با موفقیت انجام شد؛ اکنون وارد شوید');
   }
   private finishAuth(response: unknown, phoneNumber: string, message: string) {
     const role = persistAuth(response, phoneNumber);

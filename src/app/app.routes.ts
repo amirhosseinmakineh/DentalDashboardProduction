@@ -16,7 +16,8 @@ import { ConsultantReservationsPage } from './pages/consultant/consultant-reserv
 import { PatientProfilePage } from './pages/patient/patient-profile.page';
 import { PatientReservationsPage } from './pages/patient/patient-reservations.page';
 import { PatientRatingPage } from './pages/patient/patient-rating.page';
-import { consultantProfileGuard, roleGuard } from './core/auth-context';
+import { ReceptionistComponent } from './pages/receptionist/receptionist.component';
+import { roleGuard } from './core/auth-context';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -29,7 +30,7 @@ export const routes: Routes = [
     { path: 'consultants/:consultantId/leads', component: AdminConsultantLeadsPage },
     { path: 'consultants/:consultantId/attendance', component: AdminConsultantAttendancePage }
   ]},
-  { path: 'consultant', component: ConsultantShellComponent, canActivate: [roleGuard(['Consultant'])], canActivateChild: [consultantProfileGuard], children: [
+  { path: 'consultant', component: ConsultantShellComponent, canActivate: [roleGuard(['Consultant'])], children: [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: 'dashboard', component: ConsultantAttendancePage },
     { path: 'leads', component: ConsultantLeadsPage },
@@ -41,5 +42,6 @@ export const routes: Routes = [
     { path: 'profile', component: PatientProfilePage },
     { path: 'reservations', component: PatientReservationsPage },
     { path: 'rating', component: PatientRatingPage }
-  ]}
+  ]},
+  { path: 'receptionist', component: ReceptionistComponent, canActivate: [roleGuard(['Secretary'])] }
 ];

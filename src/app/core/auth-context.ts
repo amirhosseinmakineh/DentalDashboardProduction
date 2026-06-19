@@ -33,6 +33,11 @@ export function persistAuth(response: unknown, fallbackPhone = ''): string {
   if (auth.lastName) writeStorage('currentUserLastName', auth.lastName);
   return resolvedRole;
 }
+
+export function clearAuth(): void {
+  if (typeof localStorage === 'undefined') return;
+  ['authToken', 'currentUserRole', 'currentUserId', 'currentUserPhone', 'currentUserFirstName', 'currentUserLastName', 'consultantProfileId'].forEach(key => localStorage.removeItem(key));
+}
 export function isAuthenticated(): boolean { return Boolean(token() || readStorage('currentUserPhone')); }
 export function roleGuard(allowedRoles: AppRole[]): CanActivateFn {
   return () => {

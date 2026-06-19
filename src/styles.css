@@ -59,3 +59,58 @@ body { min-width: 320px; overflow-x: hidden; }
   .responsive-filter-panel { display:grid; }
   .user-filter-grid { align-items:end; gap:14px; padding:14px; border:1px solid #efe3d2; border-radius:24px; background:#fffaf1; }
 }
+
+/* Premium clinic marketing design system */
+:root { --lux-bg:#fbfbfd; --lux-ink:#1d1d1f; --lux-muted:#6e6e73; --lux-line:rgba(29,29,31,.10); --lux-gold:#c8a96a; --lux-cream:#f5efe5; --lux-blur:rgba(255,255,255,.74); }
+html { scroll-behavior:smooth; }
+.clinic-site { background:var(--lux-bg); color:var(--lux-ink); overflow:hidden; padding-bottom:calc(92px + env(safe-area-inset-bottom)); }
+.public-header { background:rgba(251,251,253,.82); border-bottom:1px solid var(--lux-line); }
+.brand { color:var(--lux-ink); letter-spacing:-.02em; }
+.clinic-hero { min-height:calc(100svh - 69px); padding:16px; display:grid; }
+.hero-backdrop { min-height:inherit; border-radius:42px; background-size:cover; background-position:center; display:grid; align-items:end; overflow:hidden; transform:translateZ(0); animation:heroFloat 14s ease-in-out infinite alternate; }
+.hero-copy { max-width:920px; padding:clamp(28px,7vw,92px); }
+.eyebrow { display:inline-flex; color:var(--lux-gold); font-weight:800; letter-spacing:.04em; margin-bottom:12px; }
+.hero-copy h1, .section-heading h2, .doctor-copy h2, .final-cta h2, .service-hero h1 { margin:0; letter-spacing:-.055em; line-height:.98; font-size:clamp(44px,8vw,112px); }
+.hero-copy p, .section-heading p, .doctor-copy p, .final-cta p, .service-hero p, .service-content-grid p, .faq-list p { color:var(--lux-muted); font-size:clamp(17px,2vw,22px); line-height:1.9; max-width:760px; }
+.hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:26px; }
+.premium-btn { min-height:50px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; padding:14px 24px; text-decoration:none; font-weight:900; transition:transform .25s ease, box-shadow .25s ease, background .25s ease; }
+.premium-btn:hover { transform:translateY(-3px) scale(1.01); }
+.premium-btn.primary { background:var(--lux-ink); color:#fff; box-shadow:0 18px 40px rgba(29,29,31,.18); }
+.premium-btn.glass { color:var(--lux-ink); background:var(--lux-blur); border:1px solid var(--lux-line); backdrop-filter:blur(18px); }
+.premium-section { padding:clamp(56px,9vw,132px) clamp(18px,5vw,72px); max-width:1540px; margin:auto; }
+.section-heading { display:grid; place-items:center; text-align:center; margin-bottom:34px; }
+.section-heading h2, .doctor-copy h2, .final-cta h2 { font-size:clamp(34px,5vw,76px); }
+.service-rail { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(280px,390px); gap:18px; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:inline mandatory; padding:8px 4px 18px; scrollbar-width:none; }
+.service-rail::-webkit-scrollbar { display:none; }
+.lux-service-card { scroll-snap-align:center; min-height:520px; border-radius:38px; overflow:hidden; position:relative; color:#fff; text-decoration:none; background:#111; box-shadow:0 24px 70px rgba(29,29,31,.12); transition:transform .35s ease; }
+.lux-service-card:hover { transform:translateY(-8px); }
+.lux-service-card img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; opacity:.72; }
+.lux-service-card div { position:absolute; inset:auto 0 0; padding:28px; background:linear-gradient(0deg, rgba(0,0,0,.72), transparent); }
+.lux-service-card h3 { margin:0 0 8px; font-size:32px; }
+.lux-service-card p { margin:0; color:rgba(255,255,255,.82); }
+.doctor-section, .service-content-grid { max-width:1360px; margin:auto; padding:clamp(28px,5vw,72px); display:grid; grid-template-columns:1fr 1fr; gap:clamp(22px,5vw,70px); align-items:center; }
+.doctor-section img { width:100%; border-radius:44px; aspect-ratio:4/5; object-fit:cover; box-shadow:0 30px 80px rgba(29,29,31,.13); }
+.before-after-card { max-width:1120px; margin:auto; position:relative; border-radius:44px; overflow:hidden; aspect-ratio:16/9; background:#ddd; box-shadow:0 30px 90px rgba(29,29,31,.15); }
+.before-after-card img { width:100%; height:100%; object-fit:cover; display:block; }
+.after-layer { position:absolute; inset:0; width:52%; overflow:hidden; border-left:2px solid #fff; }
+.before-after-card input { position:absolute; inset:0; width:100%; opacity:.001; cursor:ew-resize; }
+.drag-pill { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:rgba(255,255,255,.82); backdrop-filter:blur(14px); padding:12px 18px; border-radius:999px; font-weight:900; }
+.tech-grid, .testimonial-grid, .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.tech-grid article, .testimonial-grid article, .steps-grid div, .service-content-grid article, .faq-list details { background:#fff; border:1px solid var(--lux-line); border-radius:34px; padding:24px; box-shadow:0 18px 50px rgba(29,29,31,.06); }
+.tech-grid img { width:100%; aspect-ratio:1.2; object-fit:cover; border-radius:26px; }
+.play-dot { width:48px; height:48px; border-radius:50%; display:grid; place-items:center; background:var(--lux-cream); color:var(--lux-gold); }
+.final-cta, .service-hero { margin:clamp(18px,4vw,56px); border-radius:46px; min-height:70svh; display:grid; place-items:center; text-align:center; padding:clamp(34px,7vw,90px); background:radial-gradient(circle at 50% 0%, #fff 0, var(--lux-cream) 48%, #f7f7f8 100%); }
+.mobile-clinic-nav { position:fixed; right:12px; left:12px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:60; display:grid; grid-template-columns:repeat(5,1fr); gap:4px; padding:9px; border-radius:28px 28px 32px 32px; background:rgba(255,255,255,.78); backdrop-filter:blur(22px); border:1px solid rgba(255,255,255,.72); box-shadow:0 18px 54px rgba(29,29,31,.18); }
+.mobile-clinic-nav a { color:var(--lux-muted); text-decoration:none; border-radius:22px; display:grid; place-items:center; gap:2px; padding:8px 4px; transition:.25s ease; }
+.mobile-clinic-nav span { font-size:11px; font-weight:800; }
+.mobile-clinic-nav a.active, .mobile-clinic-nav a:hover { background:#111; color:#fff; transform:translateY(-2px); }
+.back-link { color:var(--lux-muted); text-decoration:none; margin-bottom:18px; display:inline-flex; }
+.service-detail ul { color:var(--lux-muted); line-height:2.1; padding-right:20px; }
+.faq-list { max-width:980px; margin:auto; display:grid; gap:12px; }
+.faq-list summary { cursor:pointer; font-weight:900; font-size:20px; }
+.reveal-section { animation:softReveal .75s ease both; animation-timeline:view(); animation-range:entry 0 cover 28%; }
+@keyframes softReveal { from { opacity:0; transform:translateY(34px); } to { opacity:1; transform:none; } }
+@keyframes heroFloat { from { background-position:center 45%; } to { background-position:center 54%; } }
+@media (max-width: 900px) { .doctor-section, .service-content-grid, .tech-grid, .testimonial-grid, .steps-grid { grid-template-columns:1fr; } .clinic-hero { min-height:calc(100svh - 59px); padding:10px; } .hero-backdrop, .final-cta, .service-hero { border-radius:32px; min-height:calc(100svh - 92px); } .hero-copy { padding:28px; } .lux-service-card { min-height:460px; } .premium-section { padding-inline:14px; } }
+@media (min-width: 901px) { .mobile-clinic-nav { display:none; } .clinic-site { padding-bottom:0; } }
+@media (min-width: 1440px) { .service-rail { grid-auto-columns:minmax(360px,460px); } .lux-service-card { min-height:620px; } }

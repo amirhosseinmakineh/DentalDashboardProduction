@@ -8,6 +8,7 @@
     <div class="auth-actions signed-in-actions">
       <span class="user-chip">{{ headerUser()?.firstName || 'کاربر' }} {{ headerUser()?.lastName || '' }}</span>
       <a class="btn primary" [routerLink]="dashboardUrl()">ورود به داشبورد</a>
+      <button class="btn ghost" type="button" (click)="logout()">خروج از حساب</button>
     </div>
   </ng-template>
 </header>

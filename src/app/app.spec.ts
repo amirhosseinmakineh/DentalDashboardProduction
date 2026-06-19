@@ -21,6 +21,6 @@ describe('App', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand')?.textContent).toContain('داشبورد دندانپزشکی');
+    expect(compiled.querySelector('.brand')?.textContent).toContain('کلینیک دندانپزشکی دکتر سعید مقدم');
   });
 });

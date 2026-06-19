@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './pages/landing/landing.component';
+import { ServicePageComponent } from './pages/landing/service-page.component';
 import { AdminShellComponent } from './pages/shells/admin-shell.component';
 import { ConsultantShellComponent } from './pages/shells/consultant-shell.component';
 import { PatientShellComponent } from './pages/shells/patient-shell.component';
@@ -19,6 +20,7 @@ import { roleGuard } from './core/auth-context';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
+  { path: 'services/:slug', component: ServicePageComponent },
   { path: 'admin', component: AdminShellComponent, canActivate: [roleGuard(['Admin'])], children: [
     { path: '', redirectTo: 'users', pathMatch: 'full' },
     { path: 'users', component: AdminUsersPage },

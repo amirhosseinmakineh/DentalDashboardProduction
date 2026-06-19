@@ -7,8 +7,8 @@
 </header>
 <router-outlet />
 <app-base-toast />
-<app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود نمایشی' : 'ثبت نمایشی'" (closed)="authOpen.set(false)" (confirm)="authOpen.set(false)">
+<app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود' : 'ثبت'" (closed)="authOpen.set(false)" (confirm)="saveAuthContext()">
   <div class="auth-tabs"><button [class.active]="authTab() === 'login'" (click)="authTab.set('login')">ورود</button><button [class.active]="authTab() === 'register'" (click)="authTab.set('register')">عضویت</button></div>
-  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm"><input class="control" placeholder="شماره موبایل"/><input class="control" type="password" placeholder="رمز عبور"/></form>
-  <ng-template #registerForm><form class="form-grid"><input class="control" placeholder="نام کامل"/><input class="control" placeholder="شماره موبایل"/><select class="control"><option>بیمار</option><option>مشاور</option><option>مدیر</option></select><input class="control" type="password" placeholder="رمز عبور"/></form></ng-template>
+  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm"><input class="control" name="loginPhone" [(ngModel)]="authForm.phoneNumber" placeholder="شماره موبایل"/><input class="control" type="password" placeholder="رمز عبور"/></form>
+  <ng-template #registerForm><form class="form-grid"><input class="control" name="firstName" [(ngModel)]="authForm.firstName" placeholder="نام"/><input class="control" name="lastName" [(ngModel)]="authForm.lastName" placeholder="نام خانوادگی"/><input class="control" name="registerPhone" [(ngModel)]="authForm.phoneNumber" placeholder="شماره موبایل"/><select class="control" name="roleName" [(ngModel)]="authForm.roleName"><option>بیمار</option><option>مشاور</option><option>مدیر</option></select><input class="control" type="password" placeholder="رمز عبور"/></form></ng-template>
 </app-base-dialog>

@@ -35,6 +35,7 @@ const serviceTitles: Record<string, string> = {
 
       <section id="service-booking" class="final-cta reveal-section"><span class="eyebrow">رزرو مشاوره</span><h2>رزرو نوبت {{ title() }}</h2><p>برای دریافت برنامه درمانی اختصاصی، مشاوره خود را ثبت کنید.</p><div class="hero-actions"><a class="premium-btn primary" href="tel:+982100000000">رزرو نوبت</a><a class="premium-btn glass" href="tel:+982100000000">تماس با کلینیک</a><a class="premium-btn glass" routerLink="/">ورود به پرتال بیماران</a></div></section>
 
+      <footer class="clinic-footer"><div><strong>کلینیک دندانپزشکی دکتر سعید مقدم</strong><p>صفحه اختصاصی {{ title() }} با مسیر درمان روشن و رزرو سریع.</p></div><nav aria-label="لینک‌های فوتر"><a routerLink="/">خانه</a><a routerLink="/" fragment="services">خدمات</a><a href="tel:+982100000000">تماس</a></nav></footer>
       <nav class="mobile-clinic-nav" aria-label="ناوبری موبایل"><a routerLink="/">⌂<span>خانه</span></a><a routerLink="/" fragment="services" class="active">✦<span>خدمات</span></a><a href="#service-booking">＋<span>رزرو</span></a><a routerLink="/">◌<span>پرتال</span></a><a href="tel:+982100000000">☏<span>تماس</span></a></nav>
     </main>
   `

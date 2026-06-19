@@ -31,6 +31,13 @@ interface ClinicService {
         </div>
       </section>
 
+      <section class="trust-strip" aria-label="ویژگی‌های کلینیک">
+        <span>مشاوره شفاف</span>
+        <span>تصویربرداری دیجیتال</span>
+        <span>مواد باکیفیت</span>
+        <span>پیگیری پس از درمان</span>
+      </section>
+
       <section id="doctor" class="doctor-showcase reveal-section">
         <div class="doctor-portrait">
           <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=900&q=72" alt="تصویر حرفه‌ای دکتر سعید مقدم" loading="lazy" />
@@ -52,7 +59,8 @@ interface ClinicService {
         <div class="section-heading">
           <span class="eyebrow">خدمات کلینیک</span>
           <h2>کارت‌های Apple Style برای انتخاب درمان</h2>
-          <p>در دسکتاپ یک ریل افقی تمیز و در موبایل یک تجربه Swipe بزرگ و لمسی دارید.</p>
+          <p>در دسکتاپ یک اسلایدر افقی تمیز و در موبایل یک تجربه Swipe بزرگ و لمسی دارید.</p>
+          <div class="slider-controls" aria-hidden="true"><span>←</span><span>→</span></div>
         </div>
         <div class="service-rail" aria-label="اسلایدر خدمات کلینیک">
           <a class="lux-service-card" *ngFor="let service of services" [routerLink]="['/services', service.slug]">
@@ -125,6 +133,11 @@ interface ClinicService {
         <p>یک مشاوره دقیق، آرام و شفاف برای انتخاب بهترین مسیر درمانی شما.</p>
         <div class="hero-actions"><a class="premium-btn primary" href="tel:+982100000000">رزرو نوبت</a><a class="premium-btn glass" href="tel:+982100000000">تماس با کلینیک</a><a class="premium-btn glass" href="#home">ورود به پرتال بیماران</a></div>
       </section>
+
+      <footer id="contact" class="clinic-footer">
+        <div><strong>کلینیک دندانپزشکی دکتر سعید مقدم</strong><p>تجربه‌ای آرام، دقیق و دیجیتال برای درمان‌های زیبایی و تخصصی دندانپزشکی.</p></div>
+        <nav aria-label="لینک‌های فوتر"><a href="#services">خدمات</a><a href="#portfolio">نمونه‌کارها</a><a href="#technology">تکنولوژی</a><a href="tel:+982100000000">تماس</a></nav>
+      </footer>
 
       <nav class="mobile-clinic-nav" aria-label="ناوبری موبایل">
         <a href="#home" class="active">⌂<span>خانه</span></a><a href="#services">✦<span>خدمات</span></a><a href="#booking">＋<span>رزرو</span></a><a href="#home">◌<span>پرتال</span></a><a href="tel:+982100000000">☏<span>تماس</span></a>

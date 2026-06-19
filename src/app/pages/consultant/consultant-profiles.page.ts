@@ -3,24 +3,23 @@ import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BaseToastService } from '../../base/base-toast/base-toast.service';
-import { currentConsultantProfileId, currentUserPhone, extractConsultantProfileId, persistConsultantProfileId, readStorage, writeStorage } from '../../core/consultant-profile-context';
+import { currentConsultantProfileId, extractConsultantProfileId, persistConsultantProfileId } from '../../core/consultant-profile-context';
 
-type ApiResult = { isSuccess?: boolean; message?: string; profileId?: number; id?: number; data?: unknown };
-interface ConsultantProfileForm { firstName: string; lastName: string; phoneNumber: string; }
+type ConsultantCompleteProfileResponse = number | string | { id?: number | string; profileId?: number | string; data?: unknown; result?: unknown };
+interface ConsultantProfileForm { nationalityCode: string; address: string; isCompleteProfile: boolean; }
 
 @Component({
   selector:'app-consultant-profiles-page',
   standalone:true,
   imports:[NgIf, FormsModule],
   template:`<section class="screen-stack consultant-dashboard">
-    <article class="hero-card"><small>داشبورد مشاور</small><h2>تکمیل پروفایل مشاور</h2><p>این شناسه بعد از ثبت پروفایل ذخیره می‌شود و همه عملیات حضور، آنلاین شدن و لیدها با همان انجام می‌شود.</p></article>
+    <article class="hero-card"><small>داشبورد مشاور</small><h2>تکمیل پروفایل مشاور</h2><p>بعد از تکمیل پروفایل، بک‌اند یک عدد long به عنوان شناسه پروفایل برمی‌گرداند و همه عملیات حضور، آنلاین شدن و لیدها با همان شناسه انجام می‌شود.</p></article>
     <section class="table-card">
       <div class="state-card">شناسه پروفایل ذخیره‌شده: <strong>{{ profileId() || 'ثبت نشده' }}</strong></div>
       <form class="form-grid" (ngSubmit)="saveProfile()">
-        <input class="control" name="firstName" [(ngModel)]="form.firstName" placeholder="نام" required />
-        <input class="control" name="lastName" [(ngModel)]="form.lastName" placeholder="نام خانوادگی" required />
-        <input class="control" name="phoneNumber" [(ngModel)]="form.phoneNumber" placeholder="شماره موبایل" required />
-        <button class="btn primary" type="submit" [disabled]="saving()">تکمیل / ذخیره پروفایل مشاور</button>
+        <input class="control" name="nationalityCode" [(ngModel)]="form.nationalityCode" placeholder="کد ملی" required />
+        <textarea class="control" name="address" [(ngModel)]="form.address" placeholder="آدرس" required></textarea>
+        <button class="btn primary" type="submit" [disabled]="saving()">تکمیل پروفایل مشاور</button>
       </form>
       <p *ngIf="profileId()" class="state-card">پروفایل شما آماده است؛ اکنون می‌توانید در صفحه حضور دکمه «ثبت حضور» را بزنید و در صفحه «لیدهای من» اطلاعات را از API دریافت کنید.</p>
     </section>
@@ -29,26 +28,20 @@ interface ConsultantProfileForm { firstName: string; lastName: string; phoneNumb
 export class ConsultantProfilesPage {
   private readonly http=inject(HttpClient); private readonly toast=inject(BaseToastService); private readonly apiBase='http://localhost:5182/api';
   readonly profileId=signal(currentConsultantProfileId()); readonly saving=signal(false);
-  form: ConsultantProfileForm = {
-    firstName: readStorage('currentUserFirstName'),
-    lastName: readStorage('currentUserLastName'),
-    phoneNumber: currentUserPhone()
-  };
+  form: ConsultantProfileForm = { nationalityCode: '', address: '', isCompleteProfile: true };
 
   saveProfile(){
-    if(!this.form.phoneNumber){this.toast.error('شماره موبایل برای تکمیل پروفایل الزامی است');return;}
+    if(!this.form.nationalityCode.trim() || !this.form.address.trim()){this.toast.error('کد ملی و آدرس برای تکمیل پروفایل الزامی است');return;}
     this.saving.set(true);
-    const payload={...this.form, phoneNumber:this.form.phoneNumber.trim()};
-    this.http.post<ApiResult>(`${this.apiBase}/Consultant`, payload).subscribe({
+    const payload={nationalityCode:this.form.nationalityCode.trim(),address:this.form.address.trim(),isCompleteProfile:true};
+    this.http.post<ConsultantCompleteProfileResponse>(`${this.apiBase}/Consultant`, payload).subscribe({
       next:(response)=>{
-        const id=extractConsultantProfileId(response);
-        if(id){this.profileId.set(id);persistConsultantProfileId(id);writeStorage('currentUserPhone',payload.phoneNumber);}
-        const isSuccess=response?.isSuccess ?? true;
-        const message=response?.message ?? (id ? 'پروفایل مشاور ذخیره شد و شناسه پروفایل در داشبورد ثبت شد' : 'پروفایل مشاور ذخیره شد');
-        isSuccess ? this.toast.success(message) : this.toast.error(message);
+        const id=typeof response==='number'||typeof response==='string'?Number(response):extractConsultantProfileId(response);
+        if(id>0){this.profileId.set(id);persistConsultantProfileId(id);this.toast.success('پروفایل مشاور تکمیل شد و شناسه پروفایل ذخیره شد');}
+        else this.toast.error('شناسه پروفایل از پاسخ بک‌اند دریافت نشد');
         this.saving.set(false);
       },
-      error:()=>{this.toast.error('ذخیره پروفایل مشاور ناموفق بود');this.saving.set(false);}
+      error:()=>{this.toast.error('تکمیل پروفایل مشاور ناموفق بود');this.saving.set(false);}
     });
   }
 }

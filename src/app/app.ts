@@ -79,7 +79,7 @@ export class App {
     this.refreshHeaderUser();
     this.authVersion.update((value: number) => value + 1);
     this.toast.success(message);
-    this.authOpen.set(false); this.authLoading.set(false);
+    this.authOpen.set(false); this.authLoading.set(false); this.authVersion.update(v => v + 1);
     this.router.navigateByUrl(dashboardForRole(role));
   }
   private validateRegister() {

@@ -42,11 +42,6 @@ export function persistAuth(response: unknown, fallbackPhone = ''): string {
   return resolvedRole;
 }
 
-export function currentFullName(): string {
-  const firstName = readStorage('currentUserFirstName').trim();
-  const lastName = readStorage('currentUserLastName').trim();
-  return `${firstName} ${lastName}`.trim();
-}
 export function clearAuth(): void {
   if (typeof localStorage === 'undefined') return;
   ['authToken', 'currentUserRole', 'currentUserId', 'currentUserPhone', 'currentUserFirstName', 'currentUserLastName', 'consultantProfileId'].forEach(key => localStorage.removeItem(key));

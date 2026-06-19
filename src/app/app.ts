@@ -8,7 +8,7 @@ import { BaseDialogComponent } from './base/base-dialog/base-dialog.component';
 import { BaseToastComponent } from './base/base-toast/base-toast.component';
 import { BaseDatePickerComponent } from './base/base-date-picker/base-date-picker.component';
 import { BaseToastService } from './base/base-toast/base-toast.service';
-import { clearAuth, currentFullName, currentRole, dashboardForRole, isAuthenticated, persistAuth } from './core/auth-context';
+import { clearAuth, currentRole, dashboardForRole, isAuthenticated, persistAuth } from './core/auth-context';
 import { readStorage } from './core/consultant-profile-context';
 
 interface AuthForm { firstName: string; lastName: string; phoneNumber: string; passwordHash: string; isCompleteProfile: boolean; avatarImageName: string; gender: number; birthDate: string; }
@@ -39,7 +39,7 @@ export class App {
 
   openAuth(tab: 'login' | 'register') { this.authTab.set(tab); this.authOpen.set(true); }
   isLoggedIn() { this.authVersion(); return isAuthenticated(); }
-  displayName() { this.authVersion(); return currentFullName() || this.headerUser()?.phoneNumber || 'کاربر'; }
+  displayName() { this.authVersion(); const firstName = readStorage('currentUserFirstName').trim(); const lastName = readStorage('currentUserLastName').trim(); return `${firstName} ${lastName}`.trim() || this.headerUser()?.phoneNumber || 'کاربر'; }
   dashboardPath() { this.authVersion(); return dashboardForRole(currentRole()); }
   logout() { clearAuth(); this.authVersion.update((value: number) => value + 1); this.refreshHeaderUser(); this.router.navigateByUrl('/'); }
   submitAuth() { this.authError.set(''); this.authTab() === 'login' ? this.login() : this.register(); }

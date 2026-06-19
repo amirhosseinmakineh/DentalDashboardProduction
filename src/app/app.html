@@ -1,18 +1,8 @@
 <header class="public-header" [class.dashboard-header]="isDashboardRoute()">
   <a class="brand" routerLink="/">کلینیک دندانپزشکی دکتر سعید مقدم</a>
-  <nav class="desktop-public-nav" *ngIf="!isDashboardRoute()" aria-label="منوی اصلی">
-    <a routerLink="/">خانه</a>
-    <a href="#services">خدمات</a>
-    <a href="#portfolio">نمونه‌کارها</a>
-    <a href="#doctor">درباره دکتر</a>
-    <a href="#technology">تکنولوژی کلینیک</a>
-    <a href="#articles">مقالات</a>
-    <a href="#contact">تماس با ما</a>
-  </nav>
   <div class="auth-actions" *ngIf="!headerUser(); else signedInHeader">
-    <button class="btn ghost" type="button" (click)="openAuth('login')">ورود / عضویت</button>
-    <button class="btn ghost" type="button" (click)="openAuth('login')">پرتال بیماران</button>
-    <button class="btn primary" type="button" (click)="openAuth('register')">رزرو نوبت</button>
+    <button class="btn ghost" type="button" (click)="openAuth('login')">ورود</button>
+    <button class="btn primary" type="button" (click)="openAuth('register')">عضویت</button>
   </div>
   <ng-template #signedInHeader>
     <div class="auth-actions signed-in-actions">

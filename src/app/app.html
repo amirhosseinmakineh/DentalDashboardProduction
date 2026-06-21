@@ -1,38 +1,23 @@
-<header class="public-header" [class.dashboard-header]="isDashboardRoute()">
-  <a class="brand" routerLink="/">کلینیک دندانپزشکی دکتر سعید مقدم</a>
-  <div class="auth-actions" *ngIf="!headerUser(); else signedInHeader">
-    <button class="btn ghost" type="button" (click)="openAuth('login')">ورود</button>
-    <button class="btn primary" type="button" (click)="openAuth('register')">عضویت</button>
-  </div>
-  <ng-template #signedInHeader>
-    <div class="auth-actions signed-in-actions">
-      <span class="user-chip">{{ headerUser()?.firstName || 'کاربر' }} {{ headerUser()?.lastName || '' }}</span>
-      <a class="btn primary" [routerLink]="dashboardUrl()">ورود به داشبورد</a>
-      <button class="btn ghost" type="button" (click)="logout()">خروج از حساب</button>
+<main class="base-only-shell">
+  <section class="base-only-card">
+    <p class="eyebrow">Base System</p>
+    <h1>فقط سیستم پایه باقی مانده است</h1>
+    <p>داشبوردها، صفحات، لایه‌ها، داده‌های نمونه و منطق احراز هویت حذف شدند و فقط کامپوننت‌های پایه نگه داشته شده‌اند.</p>
+    <div class="actions">
+      <button class="btn primary" type="button" (click)="showBaseToast()">نمایش پیام پایه</button>
+      <button class="btn ghost" type="button" (click)="infoOpen.set(true)">جزئیات</button>
     </div>
-  </ng-template>
-</header>
-<router-outlet />
+  </section>
+</main>
+
 <app-base-toast />
-<app-base-dialog [open]="authOpen()" [title]="authTab() === 'login' ? 'ورود' : 'عضویت'" [confirmLabel]="authTab() === 'login' ? 'ورود' : 'ثبت عضویت'" [loading]="authLoading()" (closed)="authOpen.set(false)" (confirm)="submitAuth()">
-  <div class="auth-tabs"><button type="button" [class.active]="authTab() === 'login'" (click)="authTab.set('login')">ورود</button><button type="button" [class.active]="authTab() === 'register'" (click)="authTab.set('register')">عضویت</button></div>
-  <form class="form-grid" *ngIf="authTab() === 'login'; else registerForm" (ngSubmit)="submitAuth()">
-    <input class="control" name="loginPhone" [(ngModel)]="authForm.phoneNumber" placeholder="شماره موبایل" required />
-    <input class="control" name="loginPassword" [(ngModel)]="authForm.passwordHash" type="password" placeholder="رمز عبور" required />
-    <button class="btn primary" type="submit" [disabled]="authLoading()">ارسال درخواست ورود</button>
-  </form>
-  <ng-template #registerForm><form class="form-grid" (ngSubmit)="submitAuth()">
-    <input class="control" name="firstName" [(ngModel)]="authForm.firstName" placeholder="نام" required />
-    <input class="control" name="lastName" [(ngModel)]="authForm.lastName" placeholder="نام خانوادگی" required />
-    <input class="control" name="registerPhone" [(ngModel)]="authForm.phoneNumber" placeholder="شماره موبایل" required />
-    <input class="control" name="registerPassword" [(ngModel)]="authForm.passwordHash" type="password" placeholder="رمز عبور" required />
-    <select class="control" name="gender" [(ngModel)]="authForm.gender"><option [ngValue]="1">مرد</option><option [ngValue]="2">زن</option></select>
-    <app-base-date-picker label="تاریخ تولد" [value]="authForm.birthDate" (dateChange)="setBirthDate($event)" />
-    <label class="field"><span>تصویر پروفایل</span><input class="control" type="file" accept="image/*" (change)="onAvatarSelected($event)" /></label>
-    <img *ngIf="avatarPreview()" [src]="avatarPreview()" alt="پیش‌نمایش تصویر پروفایل" style="max-width:120px;border-radius:18px" />
-    <button class="btn primary" type="submit" [disabled]="authLoading()">ارسال درخواست ثبت‌نام</button>
-  </form></ng-template>
-  <p *ngIf="authSuccess()" class="state-card">{{ authSuccess() }}</p>
-  <p *ngIf="authError()" class="state-card">{{ authError() }}</p>
-  <p *ngIf="authLoading()" class="state-card">در حال ارسال اطلاعات...</p>
+<app-base-dialog
+  [open]="infoOpen()"
+  title="سیستم پایه"
+  confirmLabel="متوجه شدم"
+  cancelLabel="بستن"
+  (closed)="infoOpen.set(false)"
+  (confirm)="infoOpen.set(false)"
+>
+  <p>این پروژه اکنون فقط شامل فولدر <strong>base</strong> و فایل‌های ضروری اجرای Angular است.</p>
 </app-base-dialog>

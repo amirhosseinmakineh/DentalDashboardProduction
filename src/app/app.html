@@ -1,23 +1,235 @@
-<main class="base-only-shell">
-  <section class="base-only-card">
-    <p class="eyebrow">Base System</p>
-    <h1>فقط سیستم پایه باقی مانده است</h1>
-    <p>داشبوردها، صفحات، لایه‌ها، داده‌های نمونه و منطق احراز هویت حذف شدند و فقط کامپوننت‌های پایه نگه داشته شده‌اند.</p>
-    <div class="actions">
-      <button class="btn primary" type="button" (click)="showBaseToast()">نمایش پیام پایه</button>
-      <button class="btn ghost" type="button" (click)="infoOpen.set(true)">جزئیات</button>
+<header class="site-header" id="home">
+  <nav class="nav-shell" aria-label="Primary navigation">
+    <a class="brand" href="#home" aria-label="Dr. Saeid Moghaddam Dental Clinic home">
+      <span class="brand-mark">SM</span>
+      <span><strong>Dr. Saeid Moghaddam</strong><small>Dental Clinic</small></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+    <div class="nav-links" id="site-menu">
+      <a href="#services">Services</a><a href="#cases">Cases</a><a href="#doctor">Doctor</a
+      ><a href="#faq">FAQ</a>
+    </div>
+    <a class="btn btn-small btn-primary desktop-cta" href="#booking">Book</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero section" aria-labelledby="hero-title">
+    <div class="hero-copy reveal">
+      <p class="eyebrow">Premium dental care in a calm cream-white clinic</p>
+      <h1 id="hero-title">Restore Your Natural Smile</h1>
+      <p class="hero-text">
+        Experience advanced dental implants, cosmetic dentistry, orthodontics, and painless
+        treatment with Dr. Saeid Moghaddam Dental Clinic.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#booking">Book Consultation</a
+        ><a class="btn btn-glass" href="#cases">View Cases</a>
+      </div>
+      <div class="hero-stats" aria-label="Clinic highlights">
+        <span><strong>15+</strong> Years</span><span><strong>4.9</strong> Patient rating</span
+        ><span><strong>24h</strong> Emergency care</span>
+      </div>
+    </div>
+    <div class="hero-visual reveal" aria-label="Premium smile treatment room">
+      <div class="hero-image"></div>
+      <div class="floating-card">
+        <strong>Digital Smile Design</strong><span>Personalized, natural results</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="services" aria-labelledby="services-title">
+    <div class="section-heading reveal">
+      <p class="eyebrow">Services</p>
+      <h2 id="services-title">Specialist dental care for every smile</h2>
+    </div>
+    <div class="service-grid">
+      <article class="glass-card service-card reveal">
+        <span class="icon">◌</span>
+        <h3>Dental Implants</h3>
+        <p>Natural-looking replacements planned with precision technology for lasting comfort.</p>
+      </article>
+      <article class="glass-card service-card reveal">
+        <span class="icon">✦</span>
+        <h3>Teeth Whitening</h3>
+        <p>Brighten your smile safely with professional-grade whitening protocols.</p>
+      </article>
+      <article class="glass-card service-card reveal">
+        <span class="icon">⌁</span>
+        <h3>Orthodontics</h3>
+        <p>Modern alignment options designed for confident, balanced smiles.</p>
+      </article>
+      <article class="glass-card service-card reveal">
+        <span class="icon">♡</span>
+        <h3>Cosmetic Dentistry</h3>
+        <p>Veneers, bonding, and smile design with a refined, natural aesthetic.</p>
+      </article>
+      <article class="glass-card service-card reveal">
+        <span class="icon">＋</span>
+        <h3>Emergency Care</h3>
+        <p>Rapid support for pain, trauma, and urgent dental clinic visits.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section split" id="doctor" aria-labelledby="doctor-title">
+    <div class="doctor-photo reveal"></div>
+    <div class="reveal">
+      <p class="eyebrow">Lead specialist</p>
+      <h2 id="doctor-title">Dr. Saeid Moghaddam</h2>
+      <p class="lead">
+        15+ years of experience in implantology, cosmetic dentistry, and restorative smile care.
+      </p>
+      <p>
+        Patients trust Dr. Moghaddam for gentle communication, evidence-based treatment planning,
+        and a premium clinic environment focused on comfort from consultation to final result.
+      </p>
+      <a class="btn btn-primary" href="#booking">Meet Your Dentist</a>
+    </div>
+  </section>
+
+  <section class="section" id="cases" aria-labelledby="cases-title">
+    <div class="section-heading reveal">
+      <p class="eyebrow">Before / After</p>
+      <h2 id="cases-title">Drag to reveal a smile transformation</h2>
+    </div>
+    <div class="comparison reveal" data-comparison>
+      <div class="compare-img before"><span>Before</span></div>
+      <div class="compare-img after"><span>After</span></div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value="50"
+        aria-label="Before and after image reveal slider"
+      />
+    </div>
+  </section>
+
+  <section class="section why" aria-labelledby="why-title">
+    <div class="section-heading reveal">
+      <p class="eyebrow">Why us</p>
+      <h2 id="why-title">Quiet confidence, advanced care</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-item reveal">
+        <strong>15+ years experience</strong><span>Senior clinical judgment</span>
+      </div>
+      <div class="trust-item reveal">
+        <strong>Advanced technology</strong><span>Digital planning and imaging</span>
+      </div>
+      <div class="trust-item reveal">
+        <strong>Painless treatment</strong><span>Comfort-first approach</span>
+      </div>
+      <div class="trust-item reveal">
+        <strong>Certified specialist</strong><span>Premium protocols</span>
+      </div>
+      <div class="trust-item reveal">
+        <strong>Premium environment</strong><span>Warm white and cream calm</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section booking" id="booking" aria-labelledby="booking-title">
+    <div class="reveal">
+      <p class="eyebrow">Book preview</p>
+      <h2 id="booking-title">Your appointment in three simple steps</h2>
+      <p class="lead">Preview the flow. Our team confirms details personally by phone.</p>
+    </div>
+    <div class="wizard glass-card reveal" data-wizard>
+      <div class="steps">
+        <button class="step active" data-step="0">1 Select service</button
+        ><button class="step" data-step="1">2 Choose time</button
+        ><button class="step" data-step="2">3 Enter contact</button>
+      </div>
+      <div class="wizard-panel active">
+        <h3>Choose a treatment</h3>
+        <p>Dental implants, orthodontics, whitening, cosmetic dentistry, or emergency care.</p>
+      </div>
+      <div class="wizard-panel">
+        <h3>Select a comfortable time</h3>
+        <p>Morning, afternoon, or evening appointments available by confirmation.</p>
+      </div>
+      <div class="wizard-panel">
+        <h3>Share your contact</h3>
+        <p>Leave your phone number and our care coordinator will call you back.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="testimonials-title">
+    <div class="section-heading reveal">
+      <p class="eyebrow">Testimonials</p>
+      <h2 id="testimonials-title">Patient reviews</h2>
+    </div>
+    <div class="testimonial-track reveal">
+      <article>
+        “The calmest dental implant experience I could imagine.”<strong>— Sara M.</strong>
+      </article>
+      <article>
+        “My cosmetic dentistry result looks natural, not artificial.”<strong>— Amir K.</strong>
+      </article>
+      <article>
+        “Professional orthodontics with clear guidance at every visit.”<strong>— Nika R.</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="section faq" id="faq" aria-labelledby="faq-title">
+    <div class="section-heading reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-title">Answers before you visit</h2>
+    </div>
+    <div class="faq-list reveal">
+      <details>
+        <summary>Is treatment painful?</summary>
+        <p>Most procedures are planned with comfort-focused anesthesia and gentle techniques.</p>
+      </details>
+      <details>
+        <summary>How long do dental implants last?</summary>
+        <p>
+          With good hygiene and regular checkups, implants can last many years and often decades.
+        </p>
+      </details>
+      <details>
+        <summary>Am I a candidate?</summary>
+        <p>A consultation and imaging review help determine the safest treatment plan for you.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="final-cta section reveal">
+    <h2>Book Your Appointment Now</h2>
+    <p>
+      Start with a premium consultation for dental implants, cosmetic dentistry, orthodontics, or
+      urgent care.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:+10000000000">Call Clinic</a
+      ><a class="btn btn-glass" href="#booking">Book Online</a>
     </div>
   </section>
 </main>
 
-<app-base-toast />
-<app-base-dialog
-  [open]="infoOpen()"
-  title="سیستم پایه"
-  confirmLabel="متوجه شدم"
-  cancelLabel="بستن"
-  (closed)="infoOpen.set(false)"
-  (confirm)="infoOpen.set(false)"
->
-  <p>این پروژه اکنون فقط شامل فولدر <strong>base</strong> و فایل‌های ضروری اجرای Angular است.</p>
-</app-base-dialog>
+<footer class="footer">
+  <div>
+    <strong>Dr. Saeid Moghaddam Dental Clinic</strong>
+    <p>Premium dental clinic for implants, cosmetic dentistry, orthodontics, and emergency care.</p>
+  </div>
+  <address>Address: Premium Medical District<br />Phone: +1 (000) 000-0000</address>
+  <div class="social">
+    <a href="#home">Instagram</a><a href="#home">LinkedIn</a><a href="#home">Maps</a>
+  </div>
+</footer>
+
+<a class="sticky-book" href="#booking">Book Consultation</a>
+<nav class="bottom-nav" aria-label="Mobile quick navigation">
+  <a href="#home">⌂<span>Home</span></a
+  ><a href="#services">✦<span>Services</span></a
+  ><a class="book-tab" href="#booking">＋<span>Book</span></a
+  ><a href="#cases">◐<span>Gallery</span></a
+  ><a href="#doctor">♡<span>Profile</span></a>
+</nav>

@@ -1,7 +1,6 @@
 import { Component, Input, inject, signal } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { clearAuth, currentFullName } from '../../core/auth-context';
 
 export interface LayoutMenuItem { label: string; path: string; icon: string; }
 
@@ -25,6 +24,6 @@ export class BaseLayoutComponent {
   @Input() title = 'داشبورد دندانپزشکی';
   @Input() menu: LayoutMenuItem[] = [];
   drawerOpen = signal(false);
-  displayName(){return currentFullName();}
-  logout(){clearAuth();this.router.navigateByUrl('/');}
+  displayName(){return localStorage.getItem('currentUserFullName') || '';}
+  logout(){localStorage.clear();this.router.navigateByUrl('/');}
 }

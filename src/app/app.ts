@@ -36,23 +36,22 @@ export class App implements AfterViewInit {
     document.querySelectorAll<HTMLElement>('[data-comparison]').forEach((comparison) => {
       const range = comparison.querySelector<HTMLInputElement>('input[type="range"]');
       const after = comparison.querySelector<HTMLElement>('.after');
-      const update = () =>
-        after?.style.setProperty('clip-path', `inset(0 0 0 ${range?.value || 50}%)`);
+      const update = () => {
+        const value = range?.value || '50';
+        after?.style.setProperty('width', `${value}%`);
+        comparison.querySelector<HTMLElement>('.handle')?.style.setProperty('left', `${value}%`);
+      };
       range?.addEventListener('input', update);
       update();
     });
 
-    document.querySelectorAll<HTMLElement>('[data-wizard]').forEach((wizard) => {
-      const steps = Array.from(wizard.querySelectorAll<HTMLButtonElement>('.step'));
-      const panels = Array.from(wizard.querySelectorAll<HTMLElement>('.wizard-panel'));
-      steps.forEach((step, index) =>
-        step.addEventListener('click', () => {
-          steps.forEach((item) => item.classList.remove('active'));
-          panels.forEach((panel) => panel.classList.remove('active'));
-          step.classList.add('active');
-          panels[index]?.classList.add('active');
-        }),
-      );
+    document.querySelectorAll<HTMLButtonElement>('[data-slide]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const railName = button.dataset['slide'];
+        const direction = Number(button.dataset['dir'] || '1');
+        const rail = document.querySelector<HTMLElement>(`[data-rail="${railName}"]`);
+        rail?.scrollBy({ left: direction * 320, behavior: 'smooth' });
+      });
     });
 
     const observer = new IntersectionObserver(
